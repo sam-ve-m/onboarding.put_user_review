@@ -12,6 +12,10 @@ class Source(BaseModel):
     source: str
 
 
+class ActivitySource(Source):
+    value: int
+
+
 class AddressNumberSource(Source):
     value: str
 
@@ -33,6 +37,10 @@ class CelPhoneSource(Source):
 
 
 class CompanyNameSource(Source):
+    value: str
+
+
+class CnpjSource(Source):
     value: str
 
 
@@ -143,6 +151,10 @@ class NickNameSource(Source):
     value: str
 
 
+class MaritalStatusSource(Source):
+    value: int
+
+
 class PatrimonySource(Source):
     value: float
 
@@ -157,6 +169,10 @@ class SpouseSource(BaseModel):
     nationality: NationalitySource
 
 
+class StateSource(Source):
+    value: constr(min_length=2, max_length=2)
+
+
 class StreetNameSource(Source):
     value: constr(min_length=3, max_length=30)
 
@@ -168,7 +184,6 @@ class TaxResidence(BaseModel):
 
 class TaxResidenceSource(Source):
     value: List[TaxResidence]
-
 
 
 class ZipCodeSource(Source):
@@ -185,9 +200,9 @@ class UserPersonalDataUpdate(BaseModel):
     email: Optional[EmailSource]
     phone: Optional[CelPhoneSource]
     nationality: Optional[NationalitySource]
-    occupation_activity: Optional[ActivitySource]
+    occupation_activity: Optional[ActivitySource]  # validar oracle
     company_name: Optional[CompanyNameSource]
-    company_cnpj: Optional[CnpjSource]
+    company_cnpj: Optional[CnpjSource]  # fazer validator para validar CNPJ
     patrimony: Optional[PatrimonySource]
     income: Optional[IncomeSource]
     tax_residences: Optional[TaxResidenceSource] = []
@@ -197,7 +212,7 @@ class UserPersonalDataUpdate(BaseModel):
 
 
 class UserMaritalDataSource(BaseModel):
-    status: MaritalStatusSource
+    status: MaritalStatusSource  # validar oracle
     spouse: Optional[SpouseSource]
 
 
@@ -207,12 +222,12 @@ class UserDocumentsDataUpdate(BaseModel):
     identity_number: Optional[DocumentNumberSource]
     expedition_date: Optional[DateSource]
     issuer: Optional[IssuerSource]
-    state: Optional[StateSource]
+    state: Optional[StateSource]  # validar oracle
 
 
 class UserAddressDataUpdate(BaseModel):
-    country: Optional[CountrySource]
-    state: Optional[StateSource]
+    country: Optional[CountrySource]  # validar oracle
+    state: Optional[StateSource]  # validar oracle
     city: Optional[CountySource]
     neighborhood: Optional[NeighborhoodSource]
     street_name: Optional[StreetNameSource]
@@ -223,6 +238,6 @@ class UserAddressDataUpdate(BaseModel):
 
 class UserUpdateData(BaseModel):
     personal: Optional[UserPersonalDataUpdate]
-    marital: Optional[UserMaritalDataSource]
+    marital: Optional[UserMaritalDataSource]  # validar oracle
     documents: Optional[UserDocumentsDataUpdate]
     address: Optional[UserAddressDataUpdate]
