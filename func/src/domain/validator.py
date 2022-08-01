@@ -2,9 +2,9 @@ from pydantic import BaseModel, constr, validator
 from typing import Optional, List
 from datetime import datetime, timezone
 
-from .exceptions import InvalidEmail
+# from .exceptions import InvalidEmail
+from func.src.domain.exceptions import InvalidEmail
 from func.src.domain.enums.user_review import PersonGender, DocumentTypes
-from etria_logger import Gladsheim
 import re
 
 
@@ -40,8 +40,41 @@ class CompanyNameSource(Source):
     value: str
 
 
+from copy import deepcopy
+
+
 class CnpjSource(Source):
     value: str
+
+    @validator('value', always=True, allow_reuse=True)
+    def format_cnpj(cls, cnpj):
+        return list(re.sub(r'[^0-9]', '', cnpj))
+
+    @validator('value', always=True, allow_reuse=True)
+    def cnpj_is_not_a_sequence(cls, cnpj):
+        if cnpj == cnpj[::-1]:
+            raise ValueError("Invalid CNPJ")
+        return cnpj
+
+    @validator('value', always=True, allow_reuse=True)
+    def cnpj_calculation(cls, new_cnpj):
+        cnpj_origin = deepcopy(new_cnpj)
+        del new_cnpj[-2:]
+        first_digit_calculation_array = ['5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
+        calc_cnpj = 11 - ((sum([int(x) * int(y)
+                                for x, y in zip(first_digit_calculation_array, new_cnpj)
+                                ])) % 11)
+        calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
+        new_cnpj.append(str(calc_cnpj))
+        second_digit_calculation_array = ['6', '5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
+        calc_cnpj = 11 - ((sum([int(x) * int(y)
+                                for x, y in zip(second_digit_calculation_array, new_cnpj)
+                                ])) % 11)
+        calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
+        new_cnpj.append(str(calc_cnpj))
+        if not cnpj_origin == new_cnpj:
+            raise ValueError("Invalid CNPJ")
+        return new_cnpj
 
 
 class CpfSource(Source):
@@ -52,8 +85,14 @@ class CpfSource(Source):
         cpf = re.sub("[^0-9]", "", cpf)
         return cpf
 
+    @validator('cpf', always=True, allow_reuse=True)
+    def cpf_is_not_a_sequence(cls, cpf):
+        if cpf == cpf[::-1]:
+            raise ValueError("Invalid CPF")
+        return cpf
+
     @validator("cpf", always=True, allow_reuse=True)
-    def validate_cpf(cls, cpf: str):
+    def cpf_calculation(cls, cpf: str):
         cpf_last_digits = cpf[:-2]
         cont_reversed = 10
         total = 0
@@ -72,10 +111,8 @@ class CpfSource(Source):
                     digits = 0
                 total = 0
                 cpf_last_digits += str(digits)
-
-        sequence = cpf_last_digits == str(cpf_last_digits[0]) * len(cpf)
-        if not cpf == cpf_last_digits or sequence:
-            raise ValueError("invalid cpf")
+        if not cpf == cpf_last_digits:
+            raise ValueError("Invalid CPF")
         return cpf
 
 
@@ -114,11 +151,10 @@ class DocumentTypesSource(Source):
 class EmailSource(Source):
     value: str
 
-    @validator("email")
+    @validator("value", always=True, allow_reuse=True)
     def validate_email(cls, email: str):
         regex = r'^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{2,66})\.([a-z]{2,3}(?:\.[a-z]{2})?)$'
         if not re.search(regex, email):
-            Gladsheim.error(message=f"Validator::validate_email::Invalid email format::{email}")
             raise InvalidEmail
         return email
 
@@ -200,19 +236,19 @@ class UserPersonalDataUpdate(BaseModel):
     email: Optional[EmailSource]
     phone: Optional[CelPhoneSource]
     nationality: Optional[NationalitySource]
-    occupation_activity: Optional[ActivitySource]  # validar oracle
+    occupation_activity: Optional[ActivitySource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
     company_name: Optional[CompanyNameSource]
-    company_cnpj: Optional[CnpjSource]  # fazer validator para validar CNPJ
+    company_cnpj: Optional[CnpjSource]
     patrimony: Optional[PatrimonySource]
     income: Optional[IncomeSource]
     tax_residences: Optional[TaxResidenceSource] = []
     birth_place_country: Optional[CountrySource]
-    birth_place_state: Optional[StateSource]
-    birth_place_city: Optional[CountySource]
+    birth_place_state: Optional[StateSource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
+    birth_place_city: Optional[CountySource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
 
 
 class UserMaritalDataSource(BaseModel):
-    status: MaritalStatusSource  # validar oracle
+    status: MaritalStatusSource
     spouse: Optional[SpouseSource]
 
 
@@ -222,13 +258,13 @@ class UserDocumentsDataUpdate(BaseModel):
     identity_number: Optional[DocumentNumberSource]
     expedition_date: Optional[DateSource]
     issuer: Optional[IssuerSource]
-    state: Optional[StateSource]  # validar oracle
+    state: Optional[StateSource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
 
 
 class UserAddressDataUpdate(BaseModel):
-    country: Optional[CountrySource]  # validar oracle
-    state: Optional[StateSource]  # validar oracle
-    city: Optional[CountySource]
+    country: Optional[CountrySource]
+    state: Optional[StateSource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
+    city: Optional[CountySource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
     neighborhood: Optional[NeighborhoodSource]
     street_name: Optional[StreetNameSource]
     number: Optional[AddressNumberSource]
@@ -238,6 +274,6 @@ class UserAddressDataUpdate(BaseModel):
 
 class UserUpdateData(BaseModel):
     personal: Optional[UserPersonalDataUpdate]
-    marital: Optional[UserMaritalDataSource]  # validar oracle
+    marital: Optional[UserMaritalDataSource]
     documents: Optional[UserDocumentsDataUpdate]
     address: Optional[UserAddressDataUpdate]
