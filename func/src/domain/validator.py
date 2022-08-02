@@ -58,22 +58,26 @@ class CnpjSource(Source):
 
     @validator('value', always=True, allow_reuse=True)
     def cnpj_calculation(cls, new_cnpj):
+        first_digit_calculation_array = ['5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
+        second_digit_calculation_array = ['6', '5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
         cnpj_origin = deepcopy(new_cnpj)
         del new_cnpj[-2:]
-        first_digit_calculation_array = ['5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
+
         calc_cnpj = 11 - ((sum([int(x) * int(y)
                                 for x, y in zip(first_digit_calculation_array, new_cnpj)
                                 ])) % 11)
         calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
         new_cnpj.append(str(calc_cnpj))
-        second_digit_calculation_array = ['6', '5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
+
         calc_cnpj = 11 - ((sum([int(x) * int(y)
                                 for x, y in zip(second_digit_calculation_array, new_cnpj)
                                 ])) % 11)
         calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
         new_cnpj.append(str(calc_cnpj))
+
         if not cnpj_origin == new_cnpj:
             raise ValueError("Invalid CNPJ")
+
         return new_cnpj
 
 

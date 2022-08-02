@@ -10,3 +10,6 @@ class UserUniqueIdNotExists(Exception):
 class InvalidEmail(Exception):
     msg = "Invalid email address"
 
+
+class InternalServerError(Exception):
+    pass

@@ -15,12 +15,12 @@ class OracleBaseRepository:
     infra = OracleInfrastructure
 
     @classmethod
-    async def query(cls, sql: str) -> list:
+    async def query(cls, sql: str, value: str | int) -> list:
         try:
             async with cls.infra.get_connection() as cursor:
-                await cursor.execute(sql)
+                await cursor.execute(sql, value=value)
                 rows = await cursor.fetchall()
-                rows = cls._normalize_encode(rows=rows)
+
                 return rows
 
         except cx_Oracle.DataError as e:
