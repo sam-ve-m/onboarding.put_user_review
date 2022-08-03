@@ -62,6 +62,15 @@ class EnumerateRepository(OracleBaseRepository):
 
         return result
 
+    async def get_state(cls, state: str) -> list:
+        sql = f"""
+            SELECT 1
+            FROM CORRWIN.TSCESTADO
+            WHERE SG_ESTADO = :filter
+        """
+        result = await cls.query(sql=sql, filters=[state])
+        return result
+
 
 if __name__ == '__main__':
 

@@ -13,3 +13,19 @@ class InvalidEmail(Exception):
 
 class InternalServerError(Exception):
     pass
+
+
+class InvalidState(Exception):
+    pass
+
+
+class InvalidNationality(Exception):
+    pass
+
+
+class InvalidMaritalStatus(Exception):
+    pass
+
+
+class InvalidCountryAcronym(Exception):
+    pass

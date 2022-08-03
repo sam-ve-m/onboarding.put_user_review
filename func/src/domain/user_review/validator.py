@@ -230,25 +230,25 @@ class ZipCodeSource(Source):
     value: constr(regex=r"^[0-9]{5}-[\d]{3}")
 
 
-class UserPersonalDataUpdate(BaseModel):
-    name: Optional[NameSource]
-    nick_name: Optional[NickNameSource]
-    birth_date: Optional[BirthDateSource]
-    gender: Optional[GenderSource]
+class UserPersonalDataValidation(BaseModel):
+    name: NameSource
+    nick_name: NickNameSource
+    birth_date: BirthDateSource
+    gender: GenderSource
     father_name: Optional[NameSource]
-    mother_name: Optional[NameSource]
-    email: Optional[EmailSource]
-    phone: Optional[CelPhoneSource]
-    nationality: Optional[NationalitySource]
-    occupation_activity: Optional[ActivitySource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
+    mother_name: NameSource
+    email: EmailSource
+    phone: CelPhoneSource
+    nationality: NationalitySource
+    occupation_activity: ActivitySource
     company_name: Optional[CompanyNameSource]
     company_cnpj: Optional[CnpjSource]
-    patrimony: Optional[PatrimonySource]
-    income: Optional[IncomeSource]
-    tax_residences: Optional[TaxResidenceSource] = []
-    birth_place_country: Optional[CountrySource]
-    birth_place_state: Optional[StateSource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
-    birth_place_city: Optional[CountySource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
+    patrimony: PatrimonySource
+    income: IncomeSource
+    tax_residences: Optional[TaxResidenceSource]
+    birth_place_country: CountrySource
+    birth_place_state: StateSource
+    birth_place_city: CountySource
 
 
 class UserMaritalDataSource(BaseModel):
@@ -256,28 +256,28 @@ class UserMaritalDataSource(BaseModel):
     spouse: Optional[SpouseSource]
 
 
-class UserDocumentsDataUpdate(BaseModel):
-    cpf: Optional[CpfSource]
-    identity_type: Optional[DocumentTypesSource]
-    identity_number: Optional[DocumentNumberSource]
-    expedition_date: Optional[DateSource]
-    issuer: Optional[IssuerSource]
-    state: Optional[StateSource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
+class UserDocumentsDataValidation(BaseModel):
+    cpf: CpfSource
+    identity_type: DocumentTypesSource
+    identity_number: DocumentNumberSource
+    expedition_date: DateSource
+    issuer: IssuerSource
+    state: StateSource
 
 
-class UserAddressDataUpdate(BaseModel):
-    country: Optional[CountrySource]
-    state: Optional[StateSource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
-    city: Optional[CountySource]  # TODO: verificar o tipo de dado que deve vir, para consultar na oracle
-    neighborhood: Optional[NeighborhoodSource]
-    street_name: Optional[StreetNameSource]
-    number: Optional[AddressNumberSource]
-    zip_code: Optional[ZipCodeSource]
+class UserAddressDataValidation(BaseModel):
+    country: CountrySource
+    state: StateSource
+    city: CountySource
+    neighborhood: NeighborhoodSource
+    street_name: StreetNameSource
+    number: AddressNumberSource
+    zip_code: ZipCodeSource
     phone: Optional[PhoneSource]
 
 
-class UserUpdateData(BaseModel):
-    personal: Optional[UserPersonalDataUpdate]
-    marital: Optional[UserMaritalDataSource]
-    documents: Optional[UserDocumentsDataUpdate]
-    address: Optional[UserAddressDataUpdate]
+class UserReviewData(BaseModel):
+    personal: UserPersonalDataValidation
+    marital: UserMaritalDataSource
+    documents: UserDocumentsDataValidation
+    address: UserAddressDataValidation
