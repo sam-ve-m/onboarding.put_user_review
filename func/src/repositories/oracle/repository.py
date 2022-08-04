@@ -8,17 +8,17 @@ from func.src.repositories.oracle.base_repository import OracleBaseRepository
 
 class EnumerateRepository(OracleBaseRepository):
     @classmethod
-    async def get_activity(cls, code: int) -> list:
+    async def get_activity(cls, activity_code: int) -> list:
         sql = f"""
                 SELECT 1
     		    FROM USPIXDB001.SINCAD_EXTERNAL_PROFESSIONAL
     		    WHERE CODE = :code
             """
-        result = await cls.query(sql=sql, filters=[code])
+        result = await cls.query(sql=sql, filters=[activity_code])
         return result
 
     @classmethod
-    async def get_city(cls, country: str, state: str, id_city: float) -> list:
+    async def get_city(cls, country: str, state: str, id_city: int) -> list:
         sql = f"""
         SELECT 1
         FROM CORRWIN.TSCDXMUNICIPIO 
@@ -41,24 +41,24 @@ class EnumerateRepository(OracleBaseRepository):
         return result
 
     @classmethod
-    async def get_marital_status(cls, code: int) -> list:
+    async def get_marital_status(cls, marital_code: int) -> list:
         sql = f"""
             SELECT 1
             FROM USPIXDB001.SINCAD_EXTERNAL_MARITAL_STATUS
             WHERE CODE = :filter
         """
-        result = await cls.query(sql=sql, filters=[code])
+        result = await cls.query(sql=sql, filters=[marital_code])
 
         return result
 
     @classmethod
-    async def get_nationality(cls, code: int) -> list:
+    async def get_nationality(cls, nationality_code: int) -> list:
         sql = f"""
             SELECT 1
             FROM USPIXDB001.SINCAD_EXTERNAL_NATIONALITY
             WHERE CODE = :filter
         """
-        result = await cls.query(sql=sql, filters=[code])
+        result = await cls.query(sql=sql, filters=[nationality_code])
 
         return result
 

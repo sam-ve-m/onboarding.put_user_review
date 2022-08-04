@@ -15,7 +15,15 @@ class InternalServerError(Exception):
     pass
 
 
+class InvalidActivity(Exception):
+    pass
+
+
 class InvalidState(Exception):
+    pass
+
+
+class InvalidCity(Exception):
     pass
 
 
