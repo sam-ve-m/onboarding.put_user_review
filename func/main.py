@@ -5,6 +5,7 @@ from src.domain.exceptions import ErrorOnDecodeJwt, UserUniqueIdNotExists
 from func.src.domain.user_review.validator import UserReviewData
 from src.services.jwt import JwtService
 from src.services.user_review import UserReviewDataService
+from src.services.user_enumerate_data import UserEnumerateService
 
 # Standards
 from http import HTTPStatus
@@ -18,10 +19,15 @@ async def update_user_data() -> Response:
     jwt = request.headers.get("x-thebes-answer")
     raw_user_update_data = request.json
     try:
-        user_data_validated = UserReviewData(**raw_user_update_data)
+        user_review_data_validated = UserReviewData(**raw_user_update_data).dict()
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
-        result = await UserReviewDataService(unique_id=unique_id, user_data_validated=user_data_validated)\
-            .update_user_data_changes()
+        await UserEnumerateService(
+            user_review_data_validated=user_review_data_validated
+        ).validate_enumerate_params()
+        result = await UserReviewDataService(
+            unique_id=unique_id,
+            user_review_data_validated=user_review_data_validated
+        ).update_user_data_changes()
         response = ResponseModel(
             result=result,
             success=True,

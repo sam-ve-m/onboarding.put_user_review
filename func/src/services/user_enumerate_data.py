@@ -4,9 +4,8 @@ from ..domain.user_enumerate.model import UserEnumerateDataModel
 from typing import List
 
 
-class EnumerateService:
+class UserEnumerateService:
     def __init__(self, user_review_data_validated: dict):
-        self.user_review_data = user_review_data_validated
         self.user_enumerate_model = UserEnumerateDataModel(user_review_data_validated=user_review_data_validated)
 
     async def validate_enumerate_params(self) -> bool:

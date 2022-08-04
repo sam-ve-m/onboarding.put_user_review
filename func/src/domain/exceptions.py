@@ -3,6 +3,16 @@ class ErrorOnDecodeJwt(Exception):
           " jwt not decoded successfully"
 
 
+class ErrorOnSendAuditLog(Exception):
+    msg = "Jormungandr-Onboarding::update_user_with_complementary_data::Error when trying to send log audit on " \
+          "Persephone"
+
+
+class ErrorOnUpdateUser(Exception):
+    msg = "Jormungandr-Onboarding::update_user_with_complementary_data::Error on trying to update user in mongo_db::" \
+          "User not exists, or unique_id invalid"
+
+
 class UserUniqueIdNotExists(Exception):
     msg = "Jormungandr-Onboarding::get_registration_data::Not exists an user_data with this unique_id"
 

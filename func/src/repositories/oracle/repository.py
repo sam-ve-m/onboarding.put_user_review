@@ -77,7 +77,7 @@ if __name__ == '__main__':
     import asyncio
 
     async def teste_repo():
-        result_country = await EnumerateRepository.get_country("BRA")
+        result_country = await EnumerateRepository.get_country("BR")
         result_ac = await EnumerateRepository.get_activity(105)
         result_na = await EnumerateRepository.get_nationality(1)
         result_ma = await EnumerateRepository.get_marital_status(1)
