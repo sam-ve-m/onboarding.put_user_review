@@ -1,11 +1,12 @@
 # Jormungandr - Onboarding
-from ...domain.exceptions import ErrorOnSendAuditLog
 from ...domain.enums.types import QueueTypes
+from ...domain.exceptions import ErrorOnSendAuditLog
 from ...domain.user_review.model import UserReviewModel
 
 # Third party
 from decouple import config
 from etria_logger import Gladsheim
+from nidavellir import Sindri
 from persephone_client import Persephone
 
 
@@ -18,6 +19,7 @@ class Audit:
     @classmethod
     async def register_log(cls, user_review_model: UserReviewModel):
         message = await user_review_model.get_audit_template()
+        Sindri.dict_to_primitive_types(message)
         (
             success,
             status_sent_to_persephone

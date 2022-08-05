@@ -1,6 +1,11 @@
-from ..repositories.oracle.repository import EnumerateRepository
-from ..domain.exceptions import InvalidNationality, InvalidMaritalStatus, InvalidCountryAcronym, InvalidState, InvalidCity, InvalidActivity
+# Jormungandr
+from ..domain.exceptions import (
+    InvalidNationality, InvalidMaritalStatus, InvalidCountryAcronym, InvalidState, InvalidCity, InvalidActivity
+)
 from ..domain.user_enumerate.model import UserEnumerateDataModel
+from ..repositories.oracle.repository import EnumerateRepository
+
+# Standards
 from typing import List
 
 

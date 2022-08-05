@@ -1,11 +1,11 @@
 # Jormungandr - Onboarding
-from src.domain.response.model import ResponseModel
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions import ErrorOnDecodeJwt, UserUniqueIdNotExists
-from func.src.domain.user_review.validator import UserReviewData
+from src.domain.response.model import ResponseModel
+from src.domain.user_review.validator import UserReviewData
 from src.services.jwt import JwtService
-from src.services.user_review import UserReviewDataService
 from src.services.user_enumerate_data import UserEnumerateService
+from src.services.user_review import UserReviewDataService
 
 # Standards
 from http import HTTPStatus
@@ -27,7 +27,7 @@ async def update_user_data() -> Response:
         result = await UserReviewDataService(
             unique_id=unique_id,
             user_review_data_validated=user_review_data_validated
-        ).update_user_data_changes()
+        ).apply_rules_to_update_user_review()
         response = ResponseModel(
             result=result,
             success=True,
