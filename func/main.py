@@ -58,7 +58,7 @@ async def update_user_data() -> Response:
             InvalidCountryAcronym) as ex:
         Gladsheim.info(error=ex, message=str(ex))
         response = ResponseModel(
-            success=False, code=InternalCode.INVALID_PARAMS, message=msg_error
+            success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
@@ -68,12 +68,19 @@ async def update_user_data() -> Response:
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
         return response
-    
+
     except ErrorOnUpdateUser as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
+    except ValueError as ex:
+        Gladsheim.error(error=ex)
+        response = ResponseModel(
+            success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
     except Exception as ex:
