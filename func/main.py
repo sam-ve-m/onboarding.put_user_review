@@ -1,6 +1,9 @@
 # Jormungandr - Onboarding
 from src.domain.enums.code import InternalCode
-from src.domain.exceptions import ErrorOnDecodeJwt, UserUniqueIdNotExists
+from src.domain.exceptions import (
+    ErrorOnDecodeJwt, UserUniqueIdNotExists, ErrorOnSendAuditLog, ErrorOnUpdateUser, InvalidNationality, InvalidCity,
+    InvalidState, InvalidEmail, InvalidActivity, InvalidMaritalStatus, InvalidCountryAcronym, InternalServerError
+)
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserReviewData
 from src.services.jwt import JwtService
@@ -16,6 +19,7 @@ from flask import request, Response
 
 
 async def update_user_data() -> Response:
+    msg_error = "Unexpected error occurred"
     jwt = request.headers.get("x-thebes-answer")
     raw_user_update_data = request.json
     try:
@@ -31,6 +35,7 @@ async def update_user_data() -> Response:
         response = ResponseModel(
             result=result,
             success=True,
+            message="User review data successfully updated",
             code=InternalCode.SUCCESS
         ).build_http_response(status=HTTPStatus.OK)
         return response
@@ -49,9 +54,31 @@ async def update_user_data() -> Response:
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
+    except (InvalidNationality, InvalidCity, InvalidState, InvalidEmail, InvalidActivity, InvalidMaritalStatus,
+            InvalidCountryAcronym) as ex:
+        Gladsheim.info(error=ex, message=str(ex))
+        response = ResponseModel(
+            success=False, code=InternalCode.INVALID_PARAMS, message=msg_error
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except ErrorOnSendAuditLog as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
+        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+    
+    except ErrorOnUpdateUser as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
+        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
     except Exception as ex:
         Gladsheim.error(error=ex)
         response = ResponseModel(
-            success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message="Unexpected error occurred"
+            success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
         return response
