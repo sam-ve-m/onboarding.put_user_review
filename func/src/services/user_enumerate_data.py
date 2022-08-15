@@ -1,6 +1,11 @@
 # Jormungandr
-from ..domain.exceptions import (
-    InvalidNationality, InvalidMaritalStatus, InvalidCountryAcronym, InvalidState, InvalidCity, InvalidActivity
+from ..domain.exceptions.exceptions import (
+    InvalidNationality,
+    InvalidMaritalStatus,
+    InvalidCountryAcronym,
+    InvalidState,
+    InvalidCity,
+    InvalidActivity,
 )
 from ..domain.user_enumerate.model import UserEnumerateDataModel
 from ..repositories.oracle.repository import EnumerateRepository
@@ -10,8 +15,10 @@ from typing import List
 
 
 class UserEnumerateService:
-    def __init__(self, user_review_data_validated: dict):
-        self.user_enumerate_model = UserEnumerateDataModel(user_review_data_validated=user_review_data_validated)
+    def __init__(self, payload_validated: dict):
+        self.user_enumerate_model = UserEnumerateDataModel(
+            payload_validated=payload_validated
+        )
 
     async def validate_enumerate_params(self) -> bool:
         activity_code = await self.user_enumerate_model.get_activity()
@@ -26,8 +33,12 @@ class UserEnumerateService:
         await self._validate_marital_status(marital_code=marital_code)
         address_combination = await self.user_enumerate_model.get_combination_address()
         await self._validate_combination_place(combination_place=address_combination)
-        birth_place_combination = await self.user_enumerate_model.get_combination_birth_place()
-        await self._validate_combination_place(combination_place=birth_place_combination)
+        birth_place_combination = (
+            await self.user_enumerate_model.get_combination_birth_place()
+        )
+        await self._validate_combination_place(
+            combination_place=birth_place_combination
+        )
         return True
 
     @staticmethod
@@ -57,7 +68,9 @@ class UserEnumerateService:
     @staticmethod
     async def _validate_nationality(nationalities: List) -> bool:
         for nationality_code in nationalities:
-            result = await EnumerateRepository.get_nationality(nationality_code=nationality_code)
+            result = await EnumerateRepository.get_nationality(
+                nationality_code=nationality_code
+            )
             if not result:
                 raise InvalidNationality
             return True

@@ -22,7 +22,7 @@ class Audit:
         Sindri.dict_to_primitive_types(message)
         (
             success,
-            status_sent_to_persephone
+            status_sent_to_persephone,
         ) = await cls.audit_client.send_to_persephone(
             topic=cls.topic,
             partition=cls.partition,
@@ -30,5 +30,7 @@ class Audit:
             schema_name=cls.schema_name,
         )
         if not success:
-            Gladsheim.error(message="Audit::register_user_log::Error on trying to register log")
+            Gladsheim.error(
+                message="Audit::register_user_log::Error on trying to register log"
+            )
             raise ErrorOnSendAuditLog

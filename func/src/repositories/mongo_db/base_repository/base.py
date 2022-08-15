@@ -18,6 +18,8 @@ class MongoDbBaseRepository:
             collection = database[cls.collection]
             return collection
         except Exception as ex:
-            message = f'UserRepository::_get_collection::Error when trying to get collection'
+            message = (
+                f"UserRepository::_get_collection::Error when trying to get collection"
+            )
             Gladsheim.error(error=ex, message=message)
             raise ex

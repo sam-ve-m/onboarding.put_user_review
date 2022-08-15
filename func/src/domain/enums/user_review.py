@@ -9,3 +9,7 @@ class PersonGender(StrEnum):
 class DocumentTypes(StrEnum):
     RG = "RG"
     CH = "CH"
+
+
+class UserOnboardingStep(StrEnum):
+    DATA_VALIDATION = "data_validation"

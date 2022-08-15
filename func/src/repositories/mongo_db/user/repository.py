@@ -23,13 +23,19 @@ class UserRepository(MongoDbBaseRepository):
             raise ex
 
     @classmethod
-    async def update_one_with_user_review_data(cls, unique_id: str, new_user_registration_data: dict):
+    async def update_one_with_user_review_data(
+        cls, unique_id: str, new_user_registration_data: dict
+    ):
         collection = await cls._get_collection()
         try:
-            user_updated = await collection.update_one({"unique_id": unique_id}, {"$set": new_user_registration_data})
+            user_updated = await collection.update_one(
+                {"unique_id": unique_id}, {"$set": new_user_registration_data}
+            )
             return user_updated
         except Exception as ex:
-            message = f'UserRepository::update_one_with_user_complementary_data::error on update user review data":' \
-                      f'{new_user_registration_data=}'
+            message = (
+                f'UserRepository::update_one_with_user_complementary_data::error on update user review data":'
+                f"{new_user_registration_data=}"
+            )
             Gladsheim.error(error=ex, message=message)
             raise ex

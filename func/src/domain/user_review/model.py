@@ -1,5 +1,11 @@
 class UserReviewModel:
-    def __init__(self, user_review_data: dict, unique_id: str, modified_register_data: dict, new_user_registration_data: dict):
+    def __init__(
+        self,
+        user_review_data: dict,
+        unique_id: str,
+        modified_register_data: dict,
+        new_user_registration_data: dict,
+    ):
         self.user_review_data = user_review_data
         self.unique_id = unique_id
         self.modified_register_data = modified_register_data
@@ -16,3 +22,9 @@ class UserReviewModel:
     async def get_new_user_data(self):
         del self.new_user_registration_data["_id"]
         return self.new_user_registration_data
+
+    async def get_iara_message_template(self):
+        message = {
+            "unique_id": self.unique_id,
+        }
+        return message

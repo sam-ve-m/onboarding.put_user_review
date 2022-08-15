@@ -46,32 +46,75 @@ from copy import deepcopy
 class CnpjSource(Source):
     value: str
 
-    @validator('value', always=True, allow_reuse=True)
+    @validator("value", always=True, allow_reuse=True)
     def format_cnpj(cls, cnpj):
-        return list(re.sub(r'[^0-9]', '', cnpj))
+        return list(re.sub(r"[^0-9]", "", cnpj))
 
-    @validator('value', always=True, allow_reuse=True)
+    @validator("value", always=True, allow_reuse=True)
     def cnpj_is_not_a_sequence(cls, cnpj):
         if cnpj == cnpj[::-1]:
             raise ValueError("Invalid CNPJ")
         return cnpj
 
-    @validator('value', always=True, allow_reuse=True)
+    @validator("value", always=True, allow_reuse=True)
     def cnpj_calculation(cls, new_cnpj):
-        first_digit_calculation_array = ['5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
-        second_digit_calculation_array = ['6', '5', '4', '3', '2', '9', '8', '7', '6', '5', '4', '3', '2']
+        first_digit_calculation_array = [
+            "5",
+            "4",
+            "3",
+            "2",
+            "9",
+            "8",
+            "7",
+            "6",
+            "5",
+            "4",
+            "3",
+            "2",
+        ]
+        second_digit_calculation_array = [
+            "6",
+            "5",
+            "4",
+            "3",
+            "2",
+            "9",
+            "8",
+            "7",
+            "6",
+            "5",
+            "4",
+            "3",
+            "2",
+        ]
         cnpj_origin = deepcopy(new_cnpj)
         del new_cnpj[-2:]
 
-        calc_cnpj = 11 - ((sum([int(x) * int(y)
-                                for x, y in zip(first_digit_calculation_array, new_cnpj)
-                                ])) % 11)
+        calc_cnpj = 11 - (
+            (
+                sum(
+                    [
+                        int(x) * int(y)
+                        for x, y in zip(first_digit_calculation_array, new_cnpj)
+                    ]
+                )
+            )
+            % 11
+        )
         calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
         new_cnpj.append(str(calc_cnpj))
 
-        calc_cnpj = 11 - ((sum([int(x) * int(y)
-                                for x, y in zip(second_digit_calculation_array, new_cnpj)
-                                ])) % 11)
+        calc_cnpj = 11 - (
+            (
+                sum(
+                    [
+                        int(x) * int(y)
+                        for x, y in zip(second_digit_calculation_array, new_cnpj)
+                    ]
+                )
+            )
+            % 11
+        )
         calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
         new_cnpj.append(str(calc_cnpj))
 
@@ -89,7 +132,7 @@ class CpfSource(Source):
         cpf = re.sub("[^0-9]", "", cpf)
         return cpf
 
-    @validator('cpf', always=True, allow_reuse=True)
+    @validator("cpf", always=True, allow_reuse=True)
     def cpf_is_not_a_sequence(cls, cpf):
         if cpf == cpf[::-1]:
             raise ValueError("Invalid CPF")
@@ -157,7 +200,7 @@ class EmailSource(Source):
 
     @validator("value", always=True, allow_reuse=True)
     def validate_email(cls, email: str):
-        regex = r'^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{2,66})\.([a-z]{2,3}(?:\.[a-z]{2})?)$'
+        regex = r"^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{2,66})\.([a-z]{2,3}(?:\.[a-z]{2})?)$"
         if not re.search(regex, email):
             raise InvalidEmail
         return email
