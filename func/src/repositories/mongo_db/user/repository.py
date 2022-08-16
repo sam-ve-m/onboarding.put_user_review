@@ -6,7 +6,6 @@ from etria_logger import Gladsheim
 
 
 class UserRepository(MongoDbBaseRepository):
-
     @classmethod
     async def find_one_by_unique_id(cls, unique_id: str) -> dict:
         collection = await cls._get_collection()
@@ -14,7 +13,7 @@ class UserRepository(MongoDbBaseRepository):
             user = await collection.find_one({"unique_id": unique_id})
             return user
         except Exception as ex:
-            message = f'UserRepository::find_one_user::with this query::{unique_id=}'
+            message = f"UserRepository::find_one_user::with this query::{unique_id=}"
             Gladsheim.error(error=ex, message=message)
             raise ex
 

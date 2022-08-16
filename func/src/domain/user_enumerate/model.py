@@ -65,7 +65,10 @@ class UserEnumerateDataModel:
         return address_combination
 
     async def get_country_foreign_account_tax(self) -> List:
-        foreign_account_tax = self.user_review_data.get("tax_residences", {})
+        foreign_account_tax = (
+            self.user_review_data.get("personal", {})
+            .get("tax_residences", {})
+        )
         if not foreign_account_tax:
             return []
         foreign_account_tax_list = foreign_account_tax.get("value", {})
@@ -76,6 +79,7 @@ class UserEnumerateDataModel:
             countries.append(tax_residence.get("country", {}))
         if not all(countries):
             raise ValueError("Country from foreign account tax value is required")
+        return countries
 
     async def get_document_state(self) -> str:
         document_state = (
@@ -105,13 +109,13 @@ class UserEnumerateDataModel:
         )
         current_marital_status = (
             self.user_review_data.get("marital", {})
-            .get("spouse", {})
-            .get("value", False)
+            .get("spouse", False)
         )
         nationalities = [personal_nationality]
         if current_marital_status:
-            spouse_nationality = current_marital_status.get(
-                "nationality", self._raise()
+            spouse_nationality = (
+                self.user_review_data.get("marital", {}).get("spouse", {}).get("nationality", self._raise())
+
             )
             nationalities.append(spouse_nationality)
             if not all(nationalities):
@@ -122,9 +126,3 @@ class UserEnumerateDataModel:
     @staticmethod
     async def _raise():
         raise ValueError("Value is required")
-
-
-if __name__ == "__main__":
-    marital = {"marital": {"status": {"value": 5}}}
-
-    result = marital.get("marital", {}).get("status", False).get("value")
