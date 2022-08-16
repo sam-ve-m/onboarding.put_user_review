@@ -92,7 +92,7 @@ async def update_user_data() -> Response:
         response = ResponseModel(
             success=True,
             code=InternalCode.DATA_NOT_FOUND,
-            message="There is no user_data with this token",
+            message="There is no user with this unique_id",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
@@ -105,7 +105,7 @@ async def update_user_data() -> Response:
         InvalidMaritalStatus,
         InvalidCountryAcronym,
     ) as ex:
-        Gladsheim.info(error=ex, message=str(ex))
+        Gladsheim.info(error=ex)
         response = ResponseModel(
             success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)

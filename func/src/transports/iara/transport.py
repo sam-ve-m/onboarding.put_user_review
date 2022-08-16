@@ -1,11 +1,10 @@
-# Jormungandr
+# Jormungandr - Onboarding
 from ...domain.exceptions.exceptions import ErrorOnSendIaraMessage
 from ...domain.user_review.model import UserReviewModel
 
 # Third party
 from etria_logger import Gladsheim
 from iara_client import Iara, IaraTopics, SchemaTypes
-from iara_client.domain.enums.status.enum import IaraClientStatus
 
 
 class IaraClient:
@@ -20,7 +19,7 @@ class IaraClient:
             schema_type=schema_type,
             topic=topic,
         )
-        if not status_sent_to_iara == IaraClientStatus.success.value:
+        if not success:
             Gladsheim.error(
                 message=f"Iara_client::send_to_email_verification_queue::Error when trying to send to"
                 f" iara::{message=}::{schema_type=}::{topic=}"

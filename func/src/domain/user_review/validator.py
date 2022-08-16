@@ -1,11 +1,15 @@
-from pydantic import BaseModel, constr, validator
+# Jormungandr - Onboarding
+from ...domain.enums.user_review import PersonGender, DocumentTypes
+from ..exceptions.exceptions import InvalidEmail
+
+# Standards
+from copy import deepcopy
 from typing import Optional, List
 from datetime import datetime, timezone
-
-# from .exceptions import InvalidEmail
-from func.src.domain.exceptions import InvalidEmail
-from func.src.domain.enums.user_review import PersonGender, DocumentTypes
 import re
+
+# Third party
+from pydantic import BaseModel, constr, validator
 
 
 class Source(BaseModel):
@@ -38,9 +42,6 @@ class CelPhoneSource(Source):
 
 class CompanyNameSource(Source):
     value: str
-
-
-from copy import deepcopy
 
 
 class CnpjSource(Source):

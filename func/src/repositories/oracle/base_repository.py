@@ -1,5 +1,5 @@
 # Jormungandr - Onboarding
-from ...domain.exceptions import InternalServerError
+from ...domain.exceptions.exceptions import InternalServerError
 from ...infrastructures.oracle.infrastrucuture import OracleInfrastructure
 
 # Standards

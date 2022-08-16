@@ -3,19 +3,18 @@ from ....infrastructures.mongo_db.infrastructure import MongoDBInfrastructure
 
 # Third party
 from etria_logger import Gladsheim
+from decouple import config
 
 
 class MongoDbBaseRepository:
     infra = MongoDBInfrastructure
-    database = None
-    collection = None
 
     @classmethod
     async def _get_collection(cls):
         mongo_client = cls.infra.get_client()
         try:
-            database = mongo_client[cls.database]
-            collection = database[cls.collection]
+            database = mongo_client[config("MONGODB_DATABASE_NAME")]
+            collection = database[config("MONGODB_USER_COLLECTION")]
             return collection
         except Exception as ex:
             message = (

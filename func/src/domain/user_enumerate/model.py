@@ -1,6 +1,5 @@
+# Standards
 from typing import List, Dict
-
-# from ...domain.exceptions import InvalidNationality, InvalidMaritalStatus
 
 
 class UserEnumerateDataModel:
