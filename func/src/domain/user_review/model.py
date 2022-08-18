@@ -1,12 +1,16 @@
+# Jormungandr - Onboarding
+from .validator import UserReviewData
+
+
 class UserReviewModel:
     def __init__(
         self,
-        user_review_data: dict,
+        user_review_data: UserReviewData,
         unique_id: str,
         modified_register_data: dict,
         new_user_registration_data: dict,
     ):
-        self.user_review_data = user_review_data
+        self.user_review_data = user_review_data.dict()
         self.unique_id = unique_id
         self.modified_register_data = modified_register_data
         self.new_user_registration_data = new_user_registration_data

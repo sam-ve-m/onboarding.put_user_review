@@ -35,7 +35,7 @@ async def update_user_data() -> Response:
     jwt = request.headers.get("x-thebes-answer")
     raw_payload = request.json
     try:
-        payload_validated = UserReviewData(**raw_payload).dict()
+        payload_validated = UserReviewData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         await UserReviewDataService.validate_current_onboarding_step(jwt=jwt)
         await UserEnumerateService(

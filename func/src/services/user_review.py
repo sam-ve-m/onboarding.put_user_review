@@ -1,4 +1,4 @@
-# Jormungandr
+# Jormungandr - Onboarding
 from ..domain.enums.user_review import UserOnboardingStep
 from ..domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
@@ -7,6 +7,7 @@ from ..domain.exceptions.exceptions import (
 )
 
 from ..domain.user_review.model import UserReviewModel
+from ..domain.user_review.validator import UserReviewData
 from ..repositories.mongo_db.user.repository import UserRepository
 from ..services.builders.user_registration_update import (
     UpdateCustomerRegistrationBuilder,
@@ -26,7 +27,7 @@ class UserReviewDataService:
 
     @staticmethod
     async def apply_rules_to_update_user_review(
-        unique_id: str, payload_validated: dict
+        unique_id: str, payload_validated: UserReviewData
     ) -> bool:
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (
@@ -43,10 +44,11 @@ class UserReviewDataService:
             modified_register_data=modified_register_data,
             new_user_registration_data=new_user_registration_data,
         )
-        await Audit.register_log(user_review_model=user_review_model)
+        await Audit.record_message_log(user_review_model=user_review_model)
+        new_user_template = await user_review_model.get_new_user_data()
         await UserReviewDataService._update_user_review(
             unique_id=unique_id,
-            new_user_registration_data=await user_review_model.get_new_user_data(),
+            new_user_registration_data=new_user_template,
         )
         await IaraClient.send_to_sinacor_registration_queue(
             user_model=user_review_model
@@ -67,6 +69,6 @@ class UserReviewDataService:
         user_updated = await UserRepository.update_one_with_user_review_data(
             unique_id=unique_id, new_user_registration_data=new_user_registration_data
         )
-        if not user_updated.acknowledged:
+        if not user_updated.matched_count:
             raise ErrorOnUpdateUser
         return True

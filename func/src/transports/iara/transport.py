@@ -25,3 +25,4 @@ class IaraClient:
                 f" iara::{message=}::{schema_type=}::{topic=}"
             )
             raise ErrorOnSendIaraMessage
+        return True

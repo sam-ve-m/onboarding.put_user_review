@@ -1,4 +1,4 @@
-# Jormungandr
+# Jormungandr - Onboarding
 from ..domain.exceptions.exceptions import (
     InvalidNationality,
     InvalidMaritalStatus,
@@ -8,6 +8,7 @@ from ..domain.exceptions.exceptions import (
     InvalidActivity,
 )
 from ..domain.user_enumerate.model import UserEnumerateDataModel
+from ..domain.user_review.validator import UserReviewData
 from ..repositories.oracle.repository import EnumerateRepository
 
 # Standards
@@ -15,7 +16,7 @@ from typing import List
 
 
 class UserEnumerateService:
-    def __init__(self, payload_validated: dict):
+    def __init__(self, payload_validated: UserReviewData):
         self.user_enumerate_model = UserEnumerateDataModel(
             payload_validated=payload_validated
         )

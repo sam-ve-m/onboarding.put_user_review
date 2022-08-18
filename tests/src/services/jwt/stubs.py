@@ -16,5 +16,3 @@ stub_jwt_content = {
 stub_heimdall_with_no_content = {}, SuccessResponse.SUCCESS
 stub_heimdall_response = stub_jwt_content, SuccessResponse.SUCCESS
 stub_heimdall_response_failure = "", SuccessResponse.FAILURE
-
-print(stub_heimdall_response)

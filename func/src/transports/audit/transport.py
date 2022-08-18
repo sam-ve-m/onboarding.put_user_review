@@ -14,7 +14,7 @@ class Audit:
     audit_client = Persephone
 
     @classmethod
-    async def register_log(cls, user_review_model: UserReviewModel):
+    async def record_message_log(cls, user_review_model: UserReviewModel):
         message = await user_review_model.get_audit_template()
         Sindri.dict_to_primitive_types(message)
         partition = QueueTypes.USER_UPDATE_REGISTER_DATA
@@ -34,3 +34,4 @@ class Audit:
                 message="Audit::register_user_log::Error on trying to register log"
             )
             raise ErrorOnSendAuditLog
+        return True

@@ -1,10 +1,13 @@
+# Jormungandr - Onboarding
+from func.src.domain.user_review.validator import UserReviewData
+
 # Standards
 from typing import List, Dict
 
 
 class UserEnumerateDataModel:
-    def __init__(self, payload_validated):
-        self.user_review_data = payload_validated
+    def __init__(self, payload_validated: UserReviewData):
+        self.user_review_data = payload_validated.dict()
 
     async def get_activity(self) -> int:
         activity_code = (
@@ -20,7 +23,7 @@ class UserEnumerateDataModel:
         personal_country = (
             self.user_review_data.get("personal", {})
             .get("birth_place_country", {})
-            .get("country", False)
+            .get("value", False)
         )
         personal_state = (
             self.user_review_data.get("personal", {})
@@ -45,7 +48,7 @@ class UserEnumerateDataModel:
         country_address = (
             self.user_review_data.get("address", {})
             .get("country", {})
-            .get("country", False)
+            .get("value", False)
         )
         state_address = (
             self.user_review_data.get("address", {})
@@ -65,21 +68,33 @@ class UserEnumerateDataModel:
         return address_combination
 
     async def get_country_foreign_account_tax(self) -> List:
-        foreign_account_tax = (
-            self.user_review_data.get("personal", {})
-            .get("tax_residences", {})
+        foreign_account_tax = self.user_review_data.get("personal", {}).get(
+            "foreign_account_tax", 1
         )
-        if not foreign_account_tax:
-            return []
-        foreign_account_tax_list = foreign_account_tax.get("value", {})
-        if not foreign_account_tax_list:
-            raise ValueError("Foreign account tax value is required")
+        result = await self.map_foreign_account_tax_possibilities(command=foreign_account_tax)
+        if not result:
+            return result
+        foreign_account_tax_list = foreign_account_tax.get("value", 2)
+        await self.map_foreign_account_tax_possibilities(command=foreign_account_tax_list)
         countries = list()
         for tax_residence in foreign_account_tax_list:
-            countries.append(tax_residence.get("country", {}))
-        if not all(countries):
-            raise ValueError("Country from foreign account tax value is required")
+            country = await self.map_foreign_account_tax_possibilities(command=tax_residence.get("country", 3))
+            countries.append(country)
         return countries
+
+    @staticmethod
+    async def map_foreign_account_tax_possibilities(command):
+        match command:
+            case None:
+                return []
+            case 1:
+                raise ValueError("Foreign account tax key is required")
+            case 2:
+                raise ValueError("Foreign account tax value is required")
+            case 3:
+                raise ValueError("Country from foreign account tax value is required")
+            case _:
+                return command
 
     async def get_document_state(self) -> str:
         document_state = (
@@ -107,15 +122,15 @@ class UserEnumerateDataModel:
             .get("nationality", {})
             .get("value", False)
         )
-        current_marital_status = (
-            self.user_review_data.get("marital", {})
-            .get("spouse", False)
+        current_marital_status = self.user_review_data.get("marital", {}).get(
+            "spouse", False
         )
         nationalities = [personal_nationality]
         if current_marital_status:
             spouse_nationality = (
-                self.user_review_data.get("marital", {}).get("spouse", {}).get("nationality", self._raise())
-
+                self.user_review_data.get("marital", {})
+                .get("spouse", {})
+                .get("nationality", self._raise())
             )
             nationalities.append(spouse_nationality)
             if not all(nationalities):

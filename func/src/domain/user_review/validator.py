@@ -126,20 +126,20 @@ class CnpjSource(Source):
 
 
 class CpfSource(Source):
-    cpf: str
+    value: str
 
-    @validator("cpf", always=True, allow_reuse=True)
+    @validator("value", always=True, allow_reuse=True)
     def format_cpf(cls, cpf: str):
         cpf = re.sub("[^0-9]", "", cpf)
         return cpf
 
-    @validator("cpf", always=True, allow_reuse=True)
+    @validator("value", always=True, allow_reuse=True)
     def cpf_is_not_a_sequence(cls, cpf):
         if cpf == cpf[::-1]:
             raise ValueError("Invalid CPF")
         return cpf
 
-    @validator("cpf", always=True, allow_reuse=True)
+    @validator("value", always=True, allow_reuse=True)
     def cpf_calculation(cls, cpf: str):
         cpf_last_digits = cpf[:-2]
         cont_reversed = 10
@@ -165,7 +165,7 @@ class CpfSource(Source):
 
 
 class CountrySource(Source):
-    country: constr(min_length=3, max_length=3)
+    value: constr(min_length=3, max_length=3)
 
 
 class CountySource(Source):
@@ -220,7 +220,7 @@ class IssuerSource(Source):
 
 
 class NameSource(Source):
-    value: constr(regex=r"^[a-zA-Z\sáéíóúãẽĩõũâêîôûç]+$")
+    value: constr(regex=r"^[a-zA-Z\sáéíóúãẽĩõũâêîôûç]+$", max_length=60)
 
 
 class NationalitySource(Source):
@@ -289,7 +289,7 @@ class UserPersonalDataValidation(BaseModel):
     company_cnpj: Optional[CnpjSource]
     patrimony: PatrimonySource
     income: IncomeSource
-    tax_residences: Optional[TaxResidenceSource]
+    foreign_account_tax: Optional[TaxResidenceSource]
     birth_place_country: CountrySource
     birth_place_state: StateSource
     birth_place_city: CountySource
