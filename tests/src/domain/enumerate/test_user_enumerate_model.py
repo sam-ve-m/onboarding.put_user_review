@@ -1,6 +1,3 @@
-# Standards
-from unittest.mock import patch
-
 # Third party
 import pytest
 
@@ -14,9 +11,9 @@ async def test_when_valid_activity_then_returns_activity_code(enumerate_model):
 
 
 @pytest.mark.asyncio
-async def test_when_invalid_activity_then_raises(enumerate_model_missing_data):
+async def test_when_invalid_activity_then_raises(enumerate_model_missing_some_data):
     with pytest.raises(ValueError):
-        await enumerate_model_missing_data.get_activity()
+        await enumerate_model_missing_some_data.get_activity()
 
 
 @pytest.mark.asyncio
@@ -32,9 +29,11 @@ async def test_when_valid_birth_place_then_return_combination_birth_place(
 
 
 @pytest.mark.asyncio
-async def test_when_invalid_birth_place_combination_then_raises(enumerate_model_missing_data):
+async def test_when_invalid_birth_place_combination_then_raises(
+    enumerate_model_missing_some_data,
+):
     with pytest.raises(ValueError):
-        await enumerate_model_missing_data.get_combination_birth_place()
+        await enumerate_model_missing_some_data.get_combination_birth_place()
 
 
 @pytest.mark.asyncio
@@ -48,9 +47,11 @@ async def test_when_valid_address_then_return_address_combination(enumerate_mode
 
 
 @pytest.mark.asyncio
-async def test_when_invalid_address_combination_then_raises(enumerate_model_missing_data):
+async def test_when_invalid_address_combination_then_raises(
+    enumerate_model_missing_some_data,
+):
     with pytest.raises(ValueError):
-        await enumerate_model_missing_data.get_combination_address()
+        await enumerate_model_missing_some_data.get_combination_address()
 
 
 @pytest.mark.asyncio
@@ -64,19 +65,32 @@ async def test_when_have_foreign_account_tax_then_return_countries(enumerate_mod
 
 @pytest.mark.asyncio
 async def test_when_no_foreign_account_tax_then_return_empty_list(
-        enumerate_model_missing_data,
+    enumerate_model_missing_some_data,
 ):
-    countries = await enumerate_model_missing_data.get_country_foreign_account_tax()
+    countries = (
+        await enumerate_model_missing_some_data.get_country_foreign_account_tax()
+    )
 
     assert isinstance(countries, list)
     assert countries == []
 
 
 @pytest.mark.asyncio
-@patch('func.src.domain.user_enumerate.model.UserEnumerateDataModel.map_foreign_account_tax_possibilities', side_effect=[True, ValueError])
-async def test_when_invalid_foreign_tax_then_raises(enumerate_model):
-    with pytest.raises(ValueError):
-        await enumerate_model.get_country_foreign_account_tax()
+async def test_when_foreign_tax_missing_value_then_raises(
+    enumerate_model_missing_foreign_account_tax_value,
+):
+    with pytest.raises(ValueError, match="Value key is required"):
+        await enumerate_model_missing_foreign_account_tax_value.get_country_foreign_account_tax()
+
+
+@pytest.mark.asyncio
+async def test_when_invalid_foreign_tax_missing_country_then_raises(
+    enumerate_model_missing_country_and_spouse,
+):
+    with pytest.raises(
+        ValueError, match="Country from foreign account tax value is required"
+    ):
+        await enumerate_model_missing_country_and_spouse.get_country_foreign_account_tax()
 
 
 @pytest.mark.asyncio
@@ -101,3 +115,37 @@ async def test_when_valid_nationalities_then_return_all_nationalities(enumerate_
 
     assert isinstance(nationalities, list)
     assert nationalities[0] == 1
+
+
+@pytest.mark.asyncio
+async def test_when_valid_nationality_and_no_spouse_then_return_one_nationality(
+    enumerate_model_missing_country_and_spouse,
+):
+    nationalities = await enumerate_model_missing_country_and_spouse.get_nationalities()
+
+    assert isinstance(nationalities, list)
+    assert len(nationalities) == 1
+
+
+@pytest.mark.asyncio
+async def test_when_missing_spouse_nationality_then_raises(
+    enumerate_model_missing_some_data,
+):
+    with pytest.raises(ValueError, match="Nationality value is required"):
+        await enumerate_model_missing_some_data.get_nationalities()
+
+
+@pytest.mark.asyncio
+async def test_when_missing_document_state_then_raises(
+    enumerate_model_missing_some_data,
+):
+    with pytest.raises(ValueError, match="State value is required"):
+        await enumerate_model_missing_some_data.get_document_state()
+
+
+@pytest.mark.asyncio
+async def test_when_missing_marital_status_then_raises(
+    enumerate_model_missing_some_data,
+):
+    with pytest.raises(ValueError, match="Marital status is required"):
+        await enumerate_model_missing_some_data.get_marital_status()

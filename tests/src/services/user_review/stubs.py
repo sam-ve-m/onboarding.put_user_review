@@ -87,8 +87,8 @@ stub_payload_missing_data = {
         "birth_place_state": {},
     },
     "marital": {
-        "spouse": None,
-        "status": {"value": 1, "source": "by_test"},
+        "spouse": {"name": "test"},
+        "status": {"source": "by_test"},
     },
     "documents": {
         "cpf": {"value": "53845387084", "source": "by_test"},
@@ -96,7 +96,7 @@ stub_payload_missing_data = {
         "identity_number": {"value": "385722594", "source": "by_test"},
         "expedition_date": {"value": 750124800.0, "source": "by_test"},
         "issuer": {"value": "SSP", "source": "by_test"},
-        "state": {"value": "SP", "source": "by_test"},
+        "state": {"source": "by_test"},
     },
     "address": {
         "country": {},
@@ -498,7 +498,15 @@ stub_user_enumerate_model = UserEnumerateDataModel(
 
 
 class StubUserReview:
-
     @staticmethod
     def dict():
         return stub_payload_missing_data
+
+
+class UserUpdated:
+    def __init__(self, matched_count=None):
+        self.matched_count = matched_count
+
+
+stub_user_not_updated = UserUpdated(matched_count=0)
+stub_user_updated = UserUpdated(matched_count=1)

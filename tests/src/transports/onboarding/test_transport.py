@@ -14,12 +14,13 @@ import pytest
 
 
 @pytest.mark.asyncio
+@patch("func.src.transports.onboarding_steps.transport.config")
 @patch(
     "func.src.transports.onboarding_steps.transport.AsyncClient.get",
     return_value=stub_request_success,
 )
 async def test_when_success_to_get_onboarding_steps_then_returns_current_step(
-    mock_httpx_client,
+    mock_httpx_client, mock_config
 ):
     user_current_step = await OnboardingSteps.get_user_current_step(jwt="12345")
 
@@ -28,10 +29,13 @@ async def test_when_success_to_get_onboarding_steps_then_returns_current_step(
 
 
 @pytest.mark.asyncio
+@patch("func.src.transports.onboarding_steps.transport.config")
 @patch(
     "func.src.transports.onboarding_steps.transport.AsyncClient.get",
     return_value=stub_request_failure,
 )
-async def test_when_failure_to_get_onboarding_steps_then_raises(mock_httpx_client):
+async def test_when_failure_to_get_onboarding_steps_then_raises(
+    mock_httpx_client, mock_config
+):
     with pytest.raises(OnboardingStepsStatusCodeNotOk):
         await OnboardingSteps.get_user_current_step(jwt="12345")

@@ -30,11 +30,11 @@ from etria_logger import Gladsheim
 from flask import request, Response
 
 
-async def update_user_data() -> Response:
+async def update_user_review_data() -> Response:
     msg_error = "Unexpected error occurred"
     jwt = request.headers.get("x-thebes-answer")
-    raw_payload = request.json
     try:
+        raw_payload = request.json
         payload_validated = UserReviewData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         await UserReviewDataService.validate_current_onboarding_step(jwt=jwt)

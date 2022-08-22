@@ -3,7 +3,7 @@ from ...domain.exceptions.exceptions import InternalServerError
 from ...infrastructures.oracle.infrastrucuture import OracleInfrastructure
 
 # Standards
-from typing import List
+from typing import List, Union
 
 # Third Party
 from etria_logger import Gladsheim
@@ -15,7 +15,7 @@ class OracleBaseRepository:
     infra = OracleInfrastructure
 
     @classmethod
-    async def query(cls, sql: str, filters: List[str | int]) -> list:
+    async def query(cls, sql: str, filters: List[Union[str, int]]) -> list:
         try:
             async with cls.infra.get_connection() as cursor:
                 await cursor.execute(sql, filters)
