@@ -19,7 +19,7 @@ spec:
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/fission-env-cx-async:0.0.1
+    image: nexus.sigame.com.br/fission-async-cx:0.0.1
     podspec:
       containers:
         - name: user-review-env
@@ -54,6 +54,8 @@ spec:
               value: "auth-gateway-keys-uat"
             - name: HEIMDALL_JWT_REQUIRED_FIELDS
               value: "[]"
+            - name: IARA_KAFKA_BROKERS
+              value: "172.30.8.254:9094"
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:FBJAnjkqw21yjewkDSA@172.30.19.183:6379?db=1"
             - name: ORACLE_BASE_DSN

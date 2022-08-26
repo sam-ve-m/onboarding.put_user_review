@@ -61,6 +61,7 @@ class EnumerateRepository(OracleBaseRepository):
 
         return result
 
+    @classmethod
     async def get_state(cls, state: str) -> List:
         sql = f"""
             SELECT 1

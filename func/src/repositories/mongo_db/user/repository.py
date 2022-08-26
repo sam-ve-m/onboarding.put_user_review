@@ -26,7 +26,10 @@ class UserRepository(MongoDbBaseRepository):
             user_updated = await collection.update_one(
                 {"unique_id": unique_id}, {"$set": new_user_registration_data}
             )
-            return user_updated
+            advanced_step = await collection.update_one(
+                {"unique_id": unique_id}, {"$set": {"is_bureau_data_validated": True}}
+            )
+            return user_updated and advanced_step
         except Exception as ex:
             message = (
                 f'UserRepository::update_one_with_user_complementary_data::error on update user review data":'

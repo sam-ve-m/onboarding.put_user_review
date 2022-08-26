@@ -19,7 +19,7 @@ spec:
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/fission-env-cx-async:0.0.1
+    image: nexus.sigame.com.br/fission-async-cx:0.0.1
     podspec:
       containers:
         - name: user-review-env
@@ -60,6 +60,8 @@ spec:
               value: "172.30.10.227"
             - name: ORACLE_USER
               value: "ujormdb001"
+            - name: IARA_KAFKA_BROKERS
+              value: "172.30.8.254:9094"
             - name: ORACLE_PASSWORD
               value: "kALneMdsin767"
             - name: ORACLE_SERVICE
