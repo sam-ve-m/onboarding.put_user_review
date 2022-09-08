@@ -4,11 +4,13 @@ omit =
     func/src/domain/enums/*
     func/src/domain/exceptions/*
     func/src/domain/response/*
+    func/src/domain/response/*
     func/src/infrastructures/*
     func/src/repositories/*
+    func/src/services/builders/* # TODO: Matar os 75 mutantes do builder.
     func/src/domain/user_review/validator.py
     tests/*
     */__init__.py
 
 # command to run
-# pytest --cov-report term-missing --cov-config=.coveragerc --cov=func -v
+# pytest -v

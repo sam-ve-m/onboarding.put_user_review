@@ -74,7 +74,7 @@ async def update_user_review_data() -> Response:
         response = ResponseModel(
             success=False,
             code=InternalCode.ONBOARDING_STEP_INCORRECT,
-            message="User is not in data validation step",
+            message="User is not in correct step",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
