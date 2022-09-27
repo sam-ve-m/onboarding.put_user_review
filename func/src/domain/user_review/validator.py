@@ -274,6 +274,10 @@ class ZipCodeSource(Source):
     value: constr(regex=r"^[0-9]{5}-[\d]{3}")
 
 
+class ComplementSource(Source):
+    value: constr(max_length=20)
+
+
 class UserPersonalDataValidation(BaseModel):
     name: NameSource
     nick_name: NickNameSource
@@ -318,6 +322,7 @@ class UserAddressDataValidation(BaseModel):
     number: AddressNumberSource
     zip_code: ZipCodeSource
     phone: Optional[PhoneSource]
+    complement: Optional[ComplementSource]
 
 
 class UserReviewData(BaseModel):
