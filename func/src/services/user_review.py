@@ -22,7 +22,7 @@ class UserReviewDataService:
     async def validate_current_onboarding_step(jwt: str) -> bool:
         user_current_step = await OnboardingSteps.get_user_current_step(jwt=jwt)
         if not user_current_step == UserOnboardingStep.DATA_VALIDATION:
-            raise InvalidOnboardingCurrentStep
+            raise InvalidOnboardingCurrentStep(user_current_step)
         return True
 
     @staticmethod

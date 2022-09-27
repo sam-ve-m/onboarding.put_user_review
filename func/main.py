@@ -70,7 +70,7 @@ async def update_user_review_data() -> Response:
         return response
 
     except InvalidOnboardingCurrentStep as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
+        Gladsheim.info(error=ex, message=ex.msg.format(str(ex)))
         response = ResponseModel(
             success=False,
             code=InternalCode.ONBOARDING_STEP_INCORRECT,

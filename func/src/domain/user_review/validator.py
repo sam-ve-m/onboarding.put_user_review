@@ -24,6 +24,10 @@ class AddressNumberSource(Source):
     value: str
 
 
+class UsPersonSource(Source):
+    value: bool
+
+
 class BirthDateSource(Source):
     value: int
 
@@ -290,6 +294,7 @@ class UserPersonalDataValidation(BaseModel):
     patrimony: PatrimonySource
     income: IncomeSource
     foreign_account_tax: Optional[TaxResidenceSource]
+    us_person: UsPersonSource
     birth_place_country: CountrySource
     birth_place_state: StateSource
     birth_place_city: CountySource

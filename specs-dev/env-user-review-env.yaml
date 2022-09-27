@@ -60,7 +60,7 @@ spec:
             - name: ORACLE_USER
               value: "ujormdb001"
             - name: IARA_KAFKA_BROKERS
-              value: "172.30.8.254:9094"
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: ORACLE_PASSWORD
               value: "kALneMdsin767"
             - name: ORACLE_SERVICE
