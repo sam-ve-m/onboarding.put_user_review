@@ -1,6 +1,7 @@
 # Jormungandr - Onboarding
+from ..enums.high_risk_activity import HighRiskActivity
 from ...domain.enums.user_review import PersonGender, DocumentTypes
-from ..exceptions.exceptions import InvalidEmail
+from ..exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed
 
 # Standards
 from copy import deepcopy
@@ -18,6 +19,14 @@ class Source(BaseModel):
 
 class ActivitySource(Source):
     value: int
+
+    @validator("value")
+    def occupation_cannot_be_high_risk(cls, occupation):
+        try:
+            HighRiskActivity(occupation)
+        except ValueError:
+            return occupation
+        raise HighRiskActivityNotAllowed()
 
 
 class AddressNumberSource(Source):
