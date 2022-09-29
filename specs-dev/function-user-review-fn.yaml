@@ -51,5 +51,5 @@ spec:
     packageref:
       name: user-review-fn-730c2b1e-c415-46ba-9900-eb856df59877
       namespace: default
-  requestsPerPod: 1
+  requestsPerPod: 10000
   resources: {}
