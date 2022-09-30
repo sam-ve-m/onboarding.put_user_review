@@ -19,6 +19,7 @@ stub_payload = {
         "father_name": {"value": "Pai da Silva Sauro", "source": "by_test"},
         "mother_name": {"value": "Mãe da Silva Sauro", "source": "by_test"},
         "email": {"value": "teste_mock@lionx.com.br", "source": "by_test"},
+        "us_person": {"value": False, "source": "by_test"},
         "phone": {"value": "+5511952909942", "source": "by_test"},
         "nationality": {"value": 1, "source": "by_test"},
         "occupation_activity": {"value": 155, "source": "by_test"},

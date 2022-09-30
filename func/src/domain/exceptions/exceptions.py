@@ -36,7 +36,7 @@ class OnboardingStepsStatusCodeNotOk(Exception):
 
 
 class InvalidOnboardingCurrentStep(Exception):
-    msg = "Jormungandr-Onboarding::validate_current_onboarding_step::User is not in the electronic signature step"
+    msg = "Jormungandr-Onboarding::validate_current_onboarding_step::User is not in the data validation step: {}"
 
 
 class ErrorOnGetUniqueId(Exception):
