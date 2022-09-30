@@ -15,6 +15,7 @@ from src.domain.exceptions.exceptions import (
     InvalidOnboardingCurrentStep,
     OnboardingStepsStatusCodeNotOk,
     ErrorOnGetUniqueId,
+    HighRiskActivityNotAllowed,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserReviewData
@@ -109,6 +110,15 @@ async def update_user_review_data() -> Response:
         response = ResponseModel(
             success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except HighRiskActivityNotAllowed as ex:
+        Gladsheim.info(error=ex)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INVALID_PARAMS,
+            message="High risk occupation not allowed",
+        ).build_http_response(status=HTTPStatus.FORBIDDEN)
         return response
 
     except ErrorOnSendAuditLog as ex:

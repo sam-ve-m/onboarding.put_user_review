@@ -51,6 +51,10 @@ class InvalidActivity(Exception):
     pass
 
 
+class HighRiskActivityNotAllowed(Exception):
+    pass
+
+
 class InvalidState(Exception):
     pass
 
