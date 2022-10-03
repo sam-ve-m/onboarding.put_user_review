@@ -1,7 +1,7 @@
 import pytest
 
-from func.src.domain.exceptions.exceptions import HighRiskActivityNotAllowed
-from func.src.domain.user_review.validator import UserReviewData
+from func.src.domain.exceptions.exceptions import HighRiskActivityNotAllowed, InvalidEmail
+from func.src.domain.user_review.validator import UserReviewData, CpfSource, CnpjSource, EmailSource
 
 register_dummy = {
     "personal": {
@@ -10,6 +10,7 @@ register_dummy = {
         "birth_date": {"source": "app", "value": 158986800},
         "gender": {"source": "app", "value": "F"},
         "father_name": {"source": "app", "value": "Foi Eu"},
+        "company_cnpj": {"source": "app", "value": "02916265000160"},
         "mother_name": {"source": "app", "value": "Rosa Mae"},
         "email": {"source": "app", "value": "brabo04@abraaoz.tk"},
         "phone": {"source": "app", "value": "+5577998636716"},
@@ -55,3 +56,44 @@ async def test_validator_when_occupation_is_high_risk():
     register_stub["personal"]["occupation_activity"]["value"] = 1
     with pytest.raises(HighRiskActivityNotAllowed):
         data_validated = UserReviewData(**register_dummy)
+
+
+@pytest.mark.asyncio
+async def test_invalid_cpf_last_digit():
+    with pytest.raises(ValueError) as error:
+        CpfSource.cpf_calculation("44820841821")
+        assert error == "Invalid CPF"
+
+
+@pytest.mark.asyncio
+async def test_invalid_cpf_first_digit():
+    with pytest.raises(ValueError) as error:
+        CpfSource.cpf_calculation("44820841813")
+        assert error == "Invalid CPF"
+
+
+@pytest.mark.asyncio
+async def test_invalid_cpf_short():
+    with pytest.raises(ValueError) as error:
+        CpfSource.cpf_calculation("")
+        assert error == "Invalid CPF"
+
+
+@pytest.mark.asyncio
+async def test_invalid_cnpj():
+    with pytest.raises(ValueError) as error:
+        CnpjSource.cnpj_calculation(list("02916265000150"))
+        assert error == "Invalid CPNJ"
+
+
+@pytest.mark.asyncio
+async def test_cnpj_is_not_a_sequence():
+    with pytest.raises(ValueError) as error:
+        CnpjSource.cnpj_is_not_a_sequence(list("11111111111111"))
+        assert error == "Invalid CPNJ"
+
+
+@pytest.mark.asyncio
+async def test_invalid_email():
+    with pytest.raises(InvalidEmail):
+        EmailSource.validate_email("svm.gmail.com")
