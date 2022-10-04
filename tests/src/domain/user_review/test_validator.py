@@ -20,6 +20,7 @@ register_dummy = {
         "birth_place_country": {"source": "app", "value": "BRA"},
         "birth_place_state": {"source": "app", "value": "PA"},
         "birth_place_city": {"source": "app", "value": 2412},
+        "us_person": {"source": "app", "value": True},
     },
     "marital": {"status": {"source": "app", "value": 1}},
     "documents": {
