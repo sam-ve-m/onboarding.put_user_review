@@ -80,6 +80,13 @@ async def test_invalid_cpf_short():
 
 
 @pytest.mark.asyncio
+async def test_invalid_cpf_sequence():
+    with pytest.raises(ValueError) as error:
+        CpfSource.cpf_is_not_a_sequence("11111111111")
+        assert error == "Invalid CPF"
+
+
+@pytest.mark.asyncio
 async def test_invalid_cnpj():
     with pytest.raises(ValueError) as error:
         CnpjSource.cnpj_calculation(list("02916265000150"))

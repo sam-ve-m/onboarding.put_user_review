@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from src.services.builders.user_registration_update import UpdateCustomerRegistrationBuilder
 
 
@@ -25,12 +27,21 @@ def test_dictionary_insert_with_last_level():
 
 
 def test_dictionary_insert_with_levels():
-    dummy_current_dict_level = {}
+    dummy_current_dict_level = {dummy_simple_value: None}
     result = UpdateCustomerRegistrationBuilder._dictionary_insert_with_levels(
         dummy_simple_value, dummy_simple_value, _value=dummy_simple_value, _current_dict_level=dummy_current_dict_level
     )
     assert result is None
-    assert dummy_current_dict_level == {'value': {'value': 'value'}}
+    assert dummy_current_dict_level == {dummy_simple_value: {dummy_simple_value: dummy_simple_value}}
+
+
+def test_dictionary_insert_with_levels_raising():
+    dummy_current_dict_level = {dummy_simple_value: dummy_simple_value}
+    with pytest.raises(TypeError):
+        UpdateCustomerRegistrationBuilder._dictionary_insert_with_levels(
+            dummy_simple_value, dummy_simple_value, _value=dummy_simple_value, _current_dict_level=dummy_current_dict_level
+        )
+
 
 
 fake_instance = MagicMock()
@@ -648,4 +659,37 @@ def test_address_complement():
         levels=("address", "complement"),
         old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value,
         new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_marital_cpf_empty_spouse():
+    fake_instance._get_new_value.return_value = MagicMock()
+    fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value = False
+    UpdateCustomerRegistrationBuilder.marital_cpf(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("marital", "spouse", "cpf"),
+        old_field=None,
+        new_filed=fake_instance._get_new_value.return_value.get.return_value.get.return_value,
+    )
+
+
+def test_marital_nationality_empty_spouse():
+    fake_instance._get_new_value.return_value = MagicMock()
+    fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value = False
+    UpdateCustomerRegistrationBuilder.marital_nationality(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("marital", "spouse", "nationality"),
+        old_field=None,
+        new_filed=fake_instance._get_new_value.return_value.get.return_value.get.return_value,
+    )
+
+
+def test_marital_spouse_name_empty_spouse():
+    fake_instance._get_new_value.return_value = MagicMock()
+    fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value = False
+    UpdateCustomerRegistrationBuilder.marital_spouse_name(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("marital", "spouse", "name"),
+        old_field=None,
+        new_filed=fake_instance._get_new_value.return_value.get.return_value.get.return_value,
     )
