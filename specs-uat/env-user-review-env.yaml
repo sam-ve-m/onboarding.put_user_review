@@ -54,7 +54,7 @@ spec:
             - name: HEIMDALL_JWT_REQUIRED_FIELDS
               value: "[]"
             - name: IARA_KAFKA_BROKERS
-              value: "172.30.8.254:9094"
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:FBJAnjkqw21yjewkDSA@172.30.19.183:6379?db=1"
             - name: ORACLE_BASE_DSN

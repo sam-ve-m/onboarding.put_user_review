@@ -123,6 +123,14 @@ class UpdateCustomerRegistrationBuilder:
             )
         return self
 
+    def personal_us_person(self):
+        old_us_person = self.__old_personal_data.get("us_person")
+        if new_us_person := self._get_new_value("personal", "us_person"):
+            self._update_modified_data(
+                levels=("us_person",), old_field=old_us_person, new_filed=new_us_person
+            )
+        return self
+
     def personal_father_name(self):
         old_father_name = self.__old_personal_data.get("father_name")
         if new_father_name := self._get_new_value("personal", "father_name"):
@@ -288,7 +296,7 @@ class UpdateCustomerRegistrationBuilder:
     def marital_nationality(self):
         spouse = self.__old_personal_data.get("marital", {}).get("spouse", {})
         old_marital_nationality = None
-        if old_marital_nationality:
+        if spouse:
             old_marital_nationality = spouse.get("nationality")
         if new_marital_spouse := self._get_new_value("marital", "spouse"):
             new_marital_nationality = new_marital_spouse.get("nationality", {}).get(
@@ -304,7 +312,7 @@ class UpdateCustomerRegistrationBuilder:
     def marital_spouse_name(self):
         spouse = self.__old_personal_data.get("marital", {}).get("spouse", {})
         old_spouse_name = None
-        if old_spouse_name:
+        if spouse:
             old_spouse_name = spouse.get("name")
         if new_marital_spouse := self._get_new_value("marital", "spouse"):
             new_marital_spouse_name = new_marital_spouse.get("name", {}).get("value")
@@ -501,6 +509,17 @@ class UpdateCustomerRegistrationBuilder:
 
         return self
 
+    def address_complement(self):
+        old_address_phone = self.__old_personal_data.get("address", {}).get("complement")
+        if new_address_phone := self._get_new_value("address", "complement"):
+            self._update_modified_data(
+                levels=("address", "complement"),
+                old_field=old_address_phone,
+                new_filed=new_address_phone,
+            )
+
+        return self
+
     def build(self) -> Tuple[dict, dict]:
         (
             self.personal_name()
@@ -515,6 +534,7 @@ class UpdateCustomerRegistrationBuilder:
             .personal_tax_residences()
             .personal_email()
             .personal_gender()
+            .personal_us_person()
             .personal_father_name()
             .personal_mother_name()
             .personal_birth_date()
@@ -539,6 +559,7 @@ class UpdateCustomerRegistrationBuilder:
             .address_neighborhood()
             .address_state()
             .address_phone()
+            .address_complement()
         )
         modified_register = {
             "unique_id": self.__unique_id,
