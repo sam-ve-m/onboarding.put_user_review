@@ -37,3 +37,19 @@ class UserRepository(MongoDbBaseRepository):
             )
             Gladsheim.error(error=ex, message=message)
             raise ex
+
+    @classmethod
+    async def update_user(cls, unique_id: str, new_data: dict):
+        collection = await cls._get_collection()
+        try:
+            user_updated = await collection.update_one(
+                {"unique_id": unique_id}, {"$set": new_data}
+            )
+            return user_updated
+        except Exception as ex:
+            message = (
+                f'UserRepository::update_user::error on update user review data":'
+                f"{new_data=}"
+            )
+            Gladsheim.error(error=ex, message=message)
+            raise ex

@@ -2,7 +2,7 @@
 from func.src.domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
     InvalidOnboardingCurrentStep,
-    ErrorOnUpdateUser,
+    ErrorToUpdateUser,
 )
 from func.src.services.user_review import UserReviewDataService
 from tests.src.services.user_review.stubs import (
@@ -101,7 +101,7 @@ async def test_when_update_user_successfully_then_return_true(mock_update_user):
     return_value=stub_user_not_updated,
 )
 async def test_when_failure_to_update_user_then_raises(mock_update_user):
-    with pytest.raises(ErrorOnUpdateUser):
+    with pytest.raises(ErrorToUpdateUser):
         await UserReviewDataService._update_user_review(
             unique_id=stub_unique_id, new_user_registration_data={}
         )

@@ -18,7 +18,7 @@ spec:
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/fission-async-cx:0.0.1
+    image: nexus.sigame.com.br/fission-async-cx:0.0.2
     podspec:
       containers:
         - name: user-review-env

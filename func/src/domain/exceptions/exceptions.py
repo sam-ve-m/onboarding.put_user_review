@@ -16,7 +16,7 @@ class ErrorOnSendIaraMessage(Exception):
     msg = "Jormungandr-Onboarding::send_to_sinacor_registration_queue::Error when trying send message to Iara"
 
 
-class ErrorOnUpdateUser(Exception):
+class ErrorToUpdateUser(Exception):
     msg = (
         "Jormungandr-Onboarding::update_user_with_complementary_data::Error on trying to update user in mongo_db::"
         "User not exists, or unique_id invalid"
@@ -43,7 +43,7 @@ class ErrorOnGetUniqueId(Exception):
     msg = "Jormungandr-Onboarding::get_unique_id::Fail when trying to get unique_id"
 
 
-class InternalServerError(Exception):
+class FailedToGetData(Exception):
     msg = "Jormungandr-Onboarding::validators::Invalid param: internal server error"
 
 
@@ -53,6 +53,10 @@ class InvalidActivity(Exception):
 
 class HighRiskActivityNotAllowed(Exception):
     msg = "Jormungandr-Onboarding::validators::Invalid param: high risk activity not allowed"
+
+
+class CriticalRiskClientNotAllowed(Exception):
+    msg = "Jormungandr-Onboarding::validators::Critical risk client not allowed"
 
 
 class InvalidState(Exception):

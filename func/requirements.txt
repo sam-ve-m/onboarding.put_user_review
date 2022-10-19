@@ -8,3 +8,5 @@ iara-client==0.5.0
 motor==3.0.0
 persephone-client==1.6.1
 strenum==0.4.8
+
+# TODO: Add regis

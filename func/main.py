@@ -4,7 +4,7 @@ from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
     UserUniqueIdNotExists,
     ErrorOnSendAuditLog,
-    ErrorOnUpdateUser,
+    ErrorToUpdateUser,
     InvalidNationality,
     InvalidCity,
     InvalidState,
@@ -16,6 +16,7 @@ from src.domain.exceptions.exceptions import (
     OnboardingStepsStatusCodeNotOk,
     ErrorOnGetUniqueId,
     HighRiskActivityNotAllowed,
+    CriticalRiskClientNotAllowed,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserReviewData
@@ -31,11 +32,11 @@ from etria_logger import Gladsheim
 import flask
 
 
-async def update_user_review_data() -> flask.Response:
+async def update_user_review_data(request=flask.request) -> flask.Response:
     msg_error = "Unexpected error occurred"
-    jwt = flask.request.headers.get("x-thebes-answer")
+    jwt = request.headers.get("x-thebes-answer")
     try:
-        raw_payload = flask.request.json
+        raw_payload = request.json
         payload_validated = UserReviewData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         await UserReviewDataService.validate_current_onboarding_step(jwt=jwt)
@@ -121,6 +122,15 @@ async def update_user_review_data() -> flask.Response:
         ).build_http_response(status=HTTPStatus.FORBIDDEN)
         return response
 
+    except CriticalRiskClientNotAllowed as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INVALID_PARAMS,
+            message="Critical risk client not allowed",
+        ).build_http_response(status=HTTPStatus.FORBIDDEN)
+        return response
+
     except ErrorOnSendAuditLog as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
@@ -128,7 +138,7 @@ async def update_user_review_data() -> flask.Response:
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
         return response
 
-    except ErrorOnUpdateUser as ex:
+    except ErrorToUpdateUser as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
