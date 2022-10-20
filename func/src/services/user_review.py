@@ -52,7 +52,7 @@ class UserReviewDataService:
         user_review_model.add_risk_data(risk_data=regis_response)
 
         await Audit.record_message_log_to_rate_client_risk(
-            user_review_model=user_review_model, regis_response=regis_response
+            user_review_model=user_review_model
         )
         user_review_model.update_new_data_with_risk_data()
 
