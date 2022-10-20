@@ -29,6 +29,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorOnSendAuditLog,
                     ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
+                    CriticalRiskClientNotAllowed,
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -81,6 +82,14 @@ high_risk_activity_not_allowed_case = (
     "High risk occupation not allowed",
     HTTPStatus.FORBIDDEN,
 )
+
+critical_risk_client_not_allowed_case = (
+    CriticalRiskClientNotAllowed(),
+    CriticalRiskClientNotAllowed.msg,
+    InternalCode.INVALID_PARAMS,
+    "Critical risk client not allowed",
+    HTTPStatus.FORBIDDEN,
+)
 error_on_send_audit_log_case = (
     ErrorOnSendAuditLog(),
     ErrorOnSendAuditLog.msg,
@@ -122,6 +131,7 @@ exception_case = (
         user_unique_id_not_exists_case,
         invalid_nationality_case,
         high_risk_activity_not_allowed_case,
+        critical_risk_client_not_allowed_case,
         error_on_send_audit_log_case,
         error_on_update_user_case,
         value_error_case,
