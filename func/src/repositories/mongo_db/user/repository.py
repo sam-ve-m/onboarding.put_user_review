@@ -1,7 +1,7 @@
-# Jormungandr - Onboarding
+from datetime import datetime
+
 from ..base_repository.base import MongoDbBaseRepository
 
-# Third party
 from etria_logger import Gladsheim
 
 
@@ -29,11 +29,39 @@ class UserRepository(MongoDbBaseRepository):
             advanced_step = await collection.update_one(
                 {"unique_id": unique_id}, {"$set": {"is_bureau_data_validated": True}}
             )
-            return user_updated and advanced_step
+            last_update_record = await collection.update_one(
+                {"unique_id": unique_id},
+                {
+                    "$set": {
+                        "record_date_control": {
+                            "registry_updates": {
+                                "last_registration_data_update": datetime.utcnow(),
+                            }
+                        }
+                    }
+                },
+            )
+            return user_updated and advanced_step and last_update_record
         except Exception as ex:
             message = (
                 f'UserRepository::update_one_with_user_complementary_data::error on update user review data":'
                 f"{new_user_registration_data=}"
+            )
+            Gladsheim.error(error=ex, message=message)
+            raise ex
+
+    @classmethod
+    async def update_user(cls, unique_id: str, new_data: dict):
+        collection = await cls._get_collection()
+        try:
+            user_updated = await collection.update_one(
+                {"unique_id": unique_id}, {"$set": new_data}
+            )
+            return user_updated
+        except Exception as ex:
+            message = (
+                f'UserRepository::update_user::error on update user review data":'
+                f"{new_data=}"
             )
             Gladsheim.error(error=ex, message=message)
             raise ex

@@ -1,7 +1,15 @@
 import pytest
 
-from func.src.domain.exceptions.exceptions import HighRiskActivityNotAllowed, InvalidEmail
-from func.src.domain.user_review.validator import UserReviewData, CpfSource, CnpjSource, EmailSource
+from func.src.domain.exceptions.exceptions import (
+    HighRiskActivityNotAllowed,
+    InvalidEmail,
+)
+from func.src.domain.user_review.validator import (
+    UserReviewData,
+    CpfSource,
+    CnpjSource,
+    EmailSource,
+)
 
 register_dummy = {
     "personal": {
