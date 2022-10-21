@@ -1,14 +1,11 @@
-# Jormungandr - Onboarding
-from ...domain.enums.types import QueueTypes
-from ...domain.exceptions.exceptions import ErrorOnSendAuditLog
-from ...domain.user_review.model import UserReviewModel
-
-# Third party
 from decouple import config
 from etria_logger import Gladsheim
 from nidavellir import Sindri
 from persephone_client import Persephone
-from regis import RegisResponse
+
+from ...domain.enums.types import QueueTypes
+from ...domain.exceptions.exceptions import ErrorOnSendAuditLog
+from ...domain.user_review.model import UserReviewModel
 
 
 class Audit:
@@ -36,7 +33,7 @@ class Audit:
         )
         if not success:
             Gladsheim.error(message="Error trying to register audit log")
-            raise ErrorOnSendAuditLog
+            raise ErrorOnSendAuditLog()
         return True
 
     @classmethod
@@ -45,7 +42,7 @@ class Audit:
     ):
         message = await user_review_model.get_audit_template_to_update_risk_data()
         Sindri.dict_to_primitive_types(message)
-        partition = QueueTypes.USER_UPDATE_REGISTER_DATA
+        partition = QueueTypes.USER_UPDATE_RISK_DATA
         topic = config("PERSEPHONE_TOPIC_USER")
         schema_name = config("PERSEPHONE_USER_PLD_SCHEMA")
         (
@@ -59,5 +56,5 @@ class Audit:
         )
         if not success:
             Gladsheim.error(message="Error trying to register audit log")
-            raise ErrorOnSendAuditLog
+            raise ErrorOnSendAuditLog()
         return True

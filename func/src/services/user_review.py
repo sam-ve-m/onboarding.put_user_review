@@ -37,7 +37,9 @@ class UserReviewDataService:
                 address_city=user_data["address"]["city"],
                 profession=user_data["occupation"]["activity"],
                 is_pep=bool(user_data.get("is_politically_exposed_person")),
-                is_pep_related=bool(user_data.get("is_correlated_to_politically_exposed_person")),
+                is_pep_related=bool(
+                    user_data.get("is_correlated_to_politically_exposed_person")
+                ),
             )
         except Exception as error:
             Gladsheim.error(error=error, message="Error trying to rate client risk.")

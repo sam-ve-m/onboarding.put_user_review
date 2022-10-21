@@ -66,6 +66,7 @@ async def test_when_current_step_invalid_then_return_raises(mock_onboarding_step
 
 
 @pytest.mark.asyncio
+@patch("func.src.services.user_review.UserReviewDataService.rate_client_risk")
 @patch("func.src.services.user_review.IaraClient.send_to_sinacor_registration_queue")
 @patch("func.src.services.user_review.UserReviewDataService._update_user_review")
 @patch(
@@ -77,7 +78,12 @@ async def test_when_current_step_invalid_then_return_raises(mock_onboarding_step
     return_value=stub_user_from_database,
 )
 async def test_when_apply_rules_successfully_then_return_true(
-    mock_get_user, mock_audit_registration_data, mock_audit_pld, mock_update, mock_iara
+    mock_get_user,
+    mock_audit_registration_data,
+    mock_audit_pld,
+    mock_update,
+    mock_iara,
+    rate_risk,
 ):
     result = await UserReviewDataService.apply_rules_to_update_user_review(
         unique_id=stub_unique_id, payload_validated=stub_payload_validated
