@@ -55,8 +55,8 @@ async def test_when_invalid_address_combination_then_raises(
 
 
 @pytest.mark.asyncio
-async def test_when_have_foreign_account_tax_then_return_countries(enumerate_model):
-    countries = await enumerate_model.get_country_foreign_account_tax()
+async def test_when_have_tax_residences_then_return_countries(enumerate_model):
+    countries = await enumerate_model.get_country_tax_residences()
 
     assert isinstance(countries, list)
     assert countries[0] == "EUA"
@@ -64,11 +64,11 @@ async def test_when_have_foreign_account_tax_then_return_countries(enumerate_mod
 
 
 @pytest.mark.asyncio
-async def test_when_no_foreign_account_tax_then_return_empty_list(
+async def test_when_no_tax_residences_then_return_empty_list(
     enumerate_model_missing_some_data,
 ):
     countries = (
-        await enumerate_model_missing_some_data.get_country_foreign_account_tax()
+        await enumerate_model_missing_some_data.get_country_tax_residences()
     )
 
     assert isinstance(countries, list)
@@ -77,10 +77,10 @@ async def test_when_no_foreign_account_tax_then_return_empty_list(
 
 @pytest.mark.asyncio
 async def test_when_foreign_tax_missing_value_then_raises(
-    enumerate_model_missing_foreign_account_tax_value,
+    enumerate_model_missing_tax_residences_value,
 ):
     with pytest.raises(ValueError, match="Value key is required"):
-        await enumerate_model_missing_foreign_account_tax_value.get_country_foreign_account_tax()
+        await enumerate_model_missing_tax_residences_value.get_country_tax_residences()
 
 
 @pytest.mark.asyncio
@@ -90,7 +90,7 @@ async def test_when_invalid_foreign_tax_missing_country_then_raises(
     with pytest.raises(
         ValueError, match="Country from foreign account tax value is required"
     ):
-        await enumerate_model_missing_country_and_spouse.get_country_foreign_account_tax()
+        await enumerate_model_missing_country_and_spouse.get_country_tax_residences()
 
 
 @pytest.mark.asyncio
