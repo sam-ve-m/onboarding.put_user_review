@@ -50,3 +50,6 @@ Thumbs.db
 
 # others
 .coverage
+
+# Virtualenv
+venv/
