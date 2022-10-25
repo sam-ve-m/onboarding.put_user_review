@@ -63,17 +63,17 @@ class UserEnumerateDataModel:
             raise ValueError("Address values is required")
         return address_combination
 
-    async def get_country_foreign_account_tax(self) -> List:
-        foreign_account_tax = self.user_review_data.get("personal", {}).get(
-            "foreign_account_tax"
+    async def get_country_tax_residences(self) -> List:
+        tax_residences = self.user_review_data.get("personal", {}).get(
+            "tax_residences"
         )
-        if not foreign_account_tax:
+        if not tax_residences:
             return []
-        foreign_account_tax_list = foreign_account_tax.get("value")
-        if not foreign_account_tax_list:
+        tax_residences_list = tax_residences.get("value")
+        if not tax_residences_list:
             raise ValueError("Value key is required")
         countries = [
-            tax_residence.get("country") for tax_residence in foreign_account_tax_list
+            tax_residence.get("country") for tax_residence in tax_residences_list
         ]
         if not all(countries):
             raise ValueError("Country from foreign account tax value is required")
