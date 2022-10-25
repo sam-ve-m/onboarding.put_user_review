@@ -40,7 +40,7 @@ def enumerate_model_missing_some_data():
 
 
 @fixture(scope="function")
-def enumerate_model_missing_foreign_account_tax_value():
+def enumerate_model_missing_tax_residences_value():
     enumerate_model = UserEnumerateDataModel(
         payload_validated=user_review_stub_missing_params
     )
