@@ -39,6 +39,10 @@ class InvalidOnboardingCurrentStep(Exception):
     msg = "Jormungandr-Onboarding::validate_current_onboarding_step::User is not in the data validation step: {}"
 
 
+class InvalidOnboardingAntiFraud(Exception):
+    msg = "Jormungandr-Onboarding::validate_current_onboarding_step::User anti_fraud validation not approved"
+
+
 class ErrorOnGetUniqueId(Exception):
     msg = "Jormungandr-Onboarding::get_unique_id::Fail when trying to get unique_id"
 

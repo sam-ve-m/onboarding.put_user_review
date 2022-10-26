@@ -67,9 +67,7 @@ async def test_when_have_tax_residences_then_return_countries(enumerate_model):
 async def test_when_no_tax_residences_then_return_empty_list(
     enumerate_model_missing_some_data,
 ):
-    countries = (
-        await enumerate_model_missing_some_data.get_country_tax_residences()
-    )
+    countries = await enumerate_model_missing_some_data.get_country_tax_residences()
 
     assert isinstance(countries, list)
     assert countries == []

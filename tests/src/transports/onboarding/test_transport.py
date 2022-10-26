@@ -1,15 +1,12 @@
-# Jormungandr - Onboarding
 from func.src.domain.exceptions.exceptions import OnboardingStepsStatusCodeNotOk
-from func.src.transports.onboarding_steps.transport import OnboardingSteps
+from func.src.transports.onboarding_steps.transport import OnboardingSteps, Onboarding
 from tests.src.transports.onboarding.stubs import (
     stub_request_success,
     stub_request_failure,
 )
 
-# Standards
 from unittest.mock import patch
 
-# Third party
 import pytest
 
 
@@ -23,9 +20,9 @@ async def test_when_success_to_get_onboarding_steps_then_returns_current_step(
     mock_httpx_client, mock_config
 ):
     user_current_step = await OnboardingSteps.get_user_current_step(jwt="12345")
-
-    assert isinstance(user_current_step, str)
-    assert user_current_step == "selfie"
+    assert isinstance(user_current_step, Onboarding)
+    assert user_current_step.step == "selfie"
+    assert user_current_step.anti_fraud == "approved"
 
 
 @pytest.mark.asyncio
