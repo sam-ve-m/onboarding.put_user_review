@@ -311,7 +311,7 @@ class UserPersonalDataValidation(BaseModel):
     company_cnpj: Optional[CnpjSource]
     patrimony: PatrimonySource
     income: IncomeSource
-    foreign_account_tax: Optional[TaxResidenceSource]
+    tax_residences: Optional[TaxResidenceSource]
     us_person: UsPersonSource
     birth_place_country: CountrySource
     birth_place_state: StateSource
