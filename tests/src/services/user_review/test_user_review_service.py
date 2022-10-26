@@ -9,8 +9,10 @@ from func.src.domain.exceptions.exceptions import (
     ErrorToUpdateUser,
     CriticalRiskClientNotAllowed,
     FailedToGetData,
+    InvalidOnboardingAntiFraud,
 )
 from func.src.services.user_review import UserReviewDataService
+from src.domain.models.onboarding import Onboarding
 from src.transports.audit.transport import Audit
 from tests.src.services.user_review.stubs import (
     stub_unique_id,
@@ -45,23 +47,37 @@ async def test_when_not_found_an_user_then_raises(mock_repository):
 
 
 @pytest.mark.asyncio
-@patch(
-    "func.src.services.user_review.OnboardingSteps.get_user_current_step",
-    return_value="data_validation",
-)
-async def test_when_current_step_correct_then_return_true(mock_onboarding_steps):
+@patch("func.src.services.user_review.OnboardingSteps.get_user_current_step")
+async def test_validate_current_onboarding_step_when_step_is_ok(mock_onboarding_steps):
+    step_return_dummy = Onboarding("data_validation", "approved")
+    mock_onboarding_steps.return_value = step_return_dummy
     result = await UserReviewDataService.validate_current_onboarding_step(jwt="123")
-
     assert result is True
 
 
 @pytest.mark.asyncio
 @patch(
     "func.src.services.user_review.OnboardingSteps.get_user_current_step",
-    return_value="finished",
 )
-async def test_when_current_step_invalid_then_return_raises(mock_onboarding_steps):
+async def test_validate_current_onboarding_step_when_current_step_is_wrong(
+    mock_onboarding_steps,
+):
+    step_return_dummy = Onboarding("finished", "approved")
+    mock_onboarding_steps.return_value = step_return_dummy
     with pytest.raises(InvalidOnboardingCurrentStep):
+        await UserReviewDataService.validate_current_onboarding_step(jwt="123")
+
+
+@pytest.mark.asyncio
+@patch(
+    "func.src.services.user_review.OnboardingSteps.get_user_current_step",
+)
+async def test_validate_current_onboarding_step_when_anti_fraud_is_not_approved(
+    mock_onboarding_steps,
+):
+    step_return_dummy = Onboarding("data_validation", "reproved")
+    mock_onboarding_steps.return_value = step_return_dummy
+    with pytest.raises(InvalidOnboardingAntiFraud):
         await UserReviewDataService.validate_current_onboarding_step(jwt="123")
 
 

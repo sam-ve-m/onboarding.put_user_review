@@ -14,3 +14,7 @@ class DocumentTypes(StrEnum):
 
 class UserOnboardingStep(StrEnum):
     DATA_VALIDATION = "data_validation"
+
+
+class UserAntiFraudStatus(StrEnum):
+    APPROVED = "approved"

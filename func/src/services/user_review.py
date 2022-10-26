@@ -1,13 +1,14 @@
 from etria_logger import Gladsheim
 from regis import Regis, RegisResponse
 
-from ..domain.enums.user_review import UserOnboardingStep
+from ..domain.enums.user_review import UserOnboardingStep, UserAntiFraudStatus
 from ..domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
     ErrorToUpdateUser,
     InvalidOnboardingCurrentStep,
     FailedToGetData,
     CriticalRiskClientNotAllowed,
+    InvalidOnboardingAntiFraud,
 )
 from ..domain.user_review.model import UserReviewModel
 from ..domain.user_review.validator import UserReviewData
@@ -24,8 +25,10 @@ class UserReviewDataService:
     @staticmethod
     async def validate_current_onboarding_step(jwt: str) -> bool:
         user_current_step = await OnboardingSteps.get_user_current_step(jwt=jwt)
-        if not user_current_step == UserOnboardingStep.DATA_VALIDATION:
-            raise InvalidOnboardingCurrentStep(user_current_step)
+        if not user_current_step.step == UserOnboardingStep.DATA_VALIDATION:
+            raise InvalidOnboardingCurrentStep(user_current_step.step)
+        if user_current_step.anti_fraud != UserAntiFraudStatus.APPROVED:
+            raise InvalidOnboardingAntiFraud(user_current_step.step)
         return True
 
     @staticmethod
