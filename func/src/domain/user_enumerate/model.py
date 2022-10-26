@@ -64,9 +64,7 @@ class UserEnumerateDataModel:
         return address_combination
 
     async def get_country_tax_residences(self) -> List:
-        tax_residences = self.user_review_data.get("personal", {}).get(
-            "tax_residences"
-        )
+        tax_residences = self.user_review_data.get("personal", {}).get("tax_residences")
         if not tax_residences:
             return []
         tax_residences_list = tax_residences.get("value")

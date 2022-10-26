@@ -1,4 +1,4 @@
-stub_payload = {"result": {"current_step": "selfie"}}
+stub_payload = {"result": {"current_step": "selfie", "anti_fraud": "approved"}}
 
 
 class RequestStub:

@@ -30,6 +30,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
                     CriticalRiskClientNotAllowed,
+                    InvalidOnboardingAntiFraud,
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -53,6 +54,13 @@ invalid_onboarding_current_step_case = (
     InternalCode.ONBOARDING_STEP_INCORRECT,
     "User is not in correct step",
     HTTPStatus.BAD_REQUEST,
+)
+invalid_onboarding_anti_fraud_case = (
+    InvalidOnboardingAntiFraud(),
+    InvalidOnboardingAntiFraud.msg,
+    InternalCode.ONBOARDING_STEP_INCORRECT,
+    "User not approved",
+    HTTPStatus.FORBIDDEN,
 )
 error_on_get_unique_id_case = (
     ErrorOnGetUniqueId(),
@@ -127,6 +135,7 @@ exception_case = (
         error_on_decode_jwt_case,
         onboarding_steps_status_code_not_ok_case,
         invalid_onboarding_current_step_case,
+        invalid_onboarding_anti_fraud_case,
         error_on_get_unique_id_case,
         user_unique_id_not_exists_case,
         invalid_nationality_case,

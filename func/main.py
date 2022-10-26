@@ -17,6 +17,7 @@ from src.domain.exceptions.exceptions import (
     ErrorOnGetUniqueId,
     HighRiskActivityNotAllowed,
     CriticalRiskClientNotAllowed,
+    InvalidOnboardingAntiFraud,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserReviewData
@@ -78,6 +79,15 @@ async def update_user_review_data() -> flask.Response:
             code=InternalCode.ONBOARDING_STEP_INCORRECT,
             message="User is not in correct step",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except InvalidOnboardingAntiFraud as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.ONBOARDING_STEP_INCORRECT,
+            message="User not approved",
+        ).build_http_response(status=HTTPStatus.FORBIDDEN)
         return response
 
     except ErrorOnGetUniqueId as ex:
