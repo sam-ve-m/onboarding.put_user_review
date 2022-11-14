@@ -81,3 +81,11 @@ class InvalidMaritalStatus(Exception):
 
 class InvalidCountryAcronym(Exception):
     msg = "Jormungandr-Onboarding::validators::Invalid param: invalid country acronym"
+
+
+class DeviceInfoRequestFailed(Exception):
+    msg = "Error trying to get device info"
+
+
+class DeviceInfoNotSupplied(Exception):
+    msg = "Device info not supplied"

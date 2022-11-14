@@ -1,12 +1,12 @@
-from func.src.domain.user_review.validator import UserReviewData
-from func.src.domain.user_review.model import UserReviewModel
+import datetime
+
+from func.src.domain.models.device_info import DeviceInfo
 from func.src.domain.user_enumerate.model import UserEnumerateDataModel
+from func.src.domain.user_review.model import UserReviewModel
+from func.src.domain.user_review.validator import UserReviewData
 from func.src.services.builders.user_registration_update import (
     UpdateCustomerRegistrationBuilder,
 )
-
-import datetime
-
 
 stub_unique_id = "451baf5a-9cd5-4037-aa17-fbd0fcef66c8"
 
@@ -477,6 +477,8 @@ stub_user_from_database = {
 
 
 stub_payload_validated = UserReviewData(**stub_payload)
+stub_device_info = DeviceInfo({"precision": 1}, "")
+
 
 (
     stub_new_registration_data,
@@ -492,6 +494,7 @@ stub_user_review_model = UserReviewModel(
     unique_id=stub_unique_id,
     new_user_registration_data=stub_new_registration_data,
     modified_register_data=stub_modified_register_data,
+    device_info=stub_device_info,
 )
 stub_user_enumerate_model = UserEnumerateDataModel(
     payload_validated=stub_payload_validated
