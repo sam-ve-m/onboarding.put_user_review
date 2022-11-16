@@ -1,16 +1,16 @@
 # Jormungandr - Onboarding
 from ..enums.high_risk_activity import HighRiskActivity
 from ...domain.enums.user_review import PersonGender, DocumentTypes
-from ..exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed
+from ..exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed, FinancialCapacityNotValid
 
 # Standards
 from copy import deepcopy
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
 import re
 
 # Third party
-from pydantic import BaseModel, constr, validator
+from pydantic import BaseModel, constr, validator, root_validator
 
 
 class Source(BaseModel):
@@ -316,6 +316,14 @@ class UserPersonalDataValidation(BaseModel):
     birth_place_country: CountrySource
     birth_place_state: StateSource
     birth_place_city: CountySource
+
+    @root_validator()
+    def validate(cls, values: Dict[str, Any]):
+        patrimony = values.get("patrimony", {}).get("value")
+        income = values.get("income", {}).get("value")
+        if (patrimony + income) < 1000:
+            raise FinancialCapacityNotValid()
+        return values
 
 
 class UserMaritalDataSource(BaseModel):

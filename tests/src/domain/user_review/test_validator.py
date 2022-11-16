@@ -59,14 +59,6 @@ async def test_validator_when_is_all_ok():
 
 
 @pytest.mark.asyncio
-async def test_validator_when_occupation_is_high_risk():
-    register_stub = register_dummy.copy()
-    register_stub["personal"]["occupation_activity"]["value"] = 1
-    with pytest.raises(HighRiskActivityNotAllowed):
-        data_validated = UserReviewData(**register_dummy)
-
-
-@pytest.mark.asyncio
 async def test_invalid_cpf_last_digit():
     with pytest.raises(ValueError) as error:
         CpfSource.cpf_calculation("44820841821")
@@ -95,17 +87,27 @@ async def test_invalid_cpf_sequence():
 
 
 @pytest.mark.asyncio
-async def test_invalid_cnpj():
+def test_invalid_cnpj():
     with pytest.raises(ValueError) as error:
         CnpjSource.cnpj_calculation(list("02916265000150"))
         assert error == "Invalid CPNJ"
 
 
 @pytest.mark.asyncio
-async def test_cnpj_is_not_a_sequence():
+def test_cnpj_calculation_true_false():
+    response = CnpjSource.cnpj_calculation(list("14367555000180"))
+    assert response == "14367555000180"
+
+
+def test_cnpj_is_not_a_sequence_raises():
     with pytest.raises(ValueError) as error:
         CnpjSource.cnpj_is_not_a_sequence(list("11111111111111"))
         assert error == "Invalid CPNJ"
+
+
+def test_cnpj_is_not_a_sequence_true():
+    response = CnpjSource.cnpj_is_not_a_sequence(list("29837640179"))
+    assert response == ['2', '9', '8', '3', '7', '6', '4', '0', '1', '7', '9']
 
 
 @pytest.mark.asyncio
