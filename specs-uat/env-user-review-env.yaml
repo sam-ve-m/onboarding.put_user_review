@@ -82,7 +82,7 @@ spec:
             - name: REGIS_ORACLE_USER
               value: "UREGIDB001"
             - name: REGIS_ORACLE_PASSWORD
-              value: "DsxsY3145vSumKq"
+              value: "PE2Ed24Kb5WiQ05"
             - name: REGIS_ORACLE_SERVICE
               value: "OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM"
   version: 3
