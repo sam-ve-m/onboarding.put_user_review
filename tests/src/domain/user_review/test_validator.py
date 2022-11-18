@@ -2,13 +2,13 @@ import pytest
 
 from func.src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
-    InvalidEmail,
+    InvalidEmail, FinancialCapacityNotValid,
 )
 from func.src.domain.user_review.validator import (
     UserReviewData,
     CpfSource,
     CnpjSource,
-    EmailSource,
+    EmailSource, UserPersonalDataValidation,
 )
 
 register_dummy = {
@@ -59,61 +59,66 @@ async def test_validator_when_is_all_ok():
 
 
 @pytest.mark.asyncio
-async def test_invalid_cpf_last_digit():
-    with pytest.raises(ValueError) as error:
-        CpfSource.cpf_calculation("44820841821")
-        assert error == "Invalid CPF"
-
-
-@pytest.mark.asyncio
-async def test_invalid_cpf_first_digit():
-    with pytest.raises(ValueError) as error:
-        CpfSource.cpf_calculation("44820841813")
-        assert error == "Invalid CPF"
-
-
-@pytest.mark.asyncio
-async def test_invalid_cpf_short():
-    with pytest.raises(ValueError) as error:
-        CpfSource.cpf_calculation("")
-        assert error == "Invalid CPF"
-
-
-@pytest.mark.asyncio
-async def test_invalid_cpf_sequence():
-    with pytest.raises(ValueError) as error:
-        CpfSource.cpf_is_not_a_sequence("11111111111")
-        assert error == "Invalid CPF"
-
-
-def test_invalid_cnpj():
-    with pytest.raises(ValueError) as error:
-        CnpjSource.cnpj_calculation(list("02916265000150"))
-        assert error == "Invalid CPNJ"
-
-
-def test_cnpj_calculation_false_true():
-    response = CnpjSource.cnpj_calculation(list("14367555000180"))
-    assert response == "14367555000180"
-
-
-def test_cnpj_calculation_true_false():
-    response = CnpjSource.cnpj_calculation(list("14367225000180"))
-    assert response == "Invalid CPNJ"
-
-
-def test_cnpj_is_not_a_sequence_raises():
-    with pytest.raises(ValueError) as error:
-        CnpjSource.cnpj_is_not_a_sequence(list("11111111111111"))
-        assert error == "Invalid CPNJ"
-
-
-def test_cnpj_is_not_a_sequence_true():
-    response = CnpjSource.cnpj_is_not_a_sequence(list("29837640179"))
-    assert response == ['2', '9', '8', '3', '7', '6', '4', '0', '1', '7', '9']
-
-
-@pytest.mark.asyncio
 async def test_invalid_email():
     with pytest.raises(InvalidEmail):
         EmailSource.validate_email("svm.gmail.com")
+
+
+@pytest.mark.asyncio
+async def test_valid_email():
+    response = EmailSource.validate_email("svm@gmail.com")
+    assert response == "svm@gmail.com"
+
+
+def test_validate_cpf_true():
+    response = CpfSource.validate_cpf("72932652044")
+    assert response == "72932652044"
+
+
+def test_validate_cpf_false():
+    with pytest.raises(ValueError) as error:
+        response = CpfSource.validate_cpf("12345678910")
+
+
+def test_validate_cnpj_true():
+    response = CnpjSource.validate_cnpj("96564694000169")
+    assert response == "96564694000169"
+
+
+def test_validate_cnpj_false():
+    with pytest.raises(ValueError) as error:
+        response = CnpjSource.validate_cnpj("12123123123412")
+
+
+stub_values_false = {
+            "patrimony": {
+                "value": 500
+            },
+            "income": {
+                "value": 500
+            }
+        }
+
+
+def test_financial_capacity_false():
+    response = UserPersonalDataValidation.validate(
+        values=stub_values_false
+    )
+    assert response == stub_values_false
+
+
+stub_values_true = {
+            "patrimony": {
+                "value": 800
+            },
+            "income": {
+                "value": 100
+            }
+        }
+
+
+def test_financial_capacity_true():
+    with pytest.raises(FinancialCapacityNotValid):
+        response = UserPersonalDataValidation.validate(
+            values=stub_values_true
+        )
