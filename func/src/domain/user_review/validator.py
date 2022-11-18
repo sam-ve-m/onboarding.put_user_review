@@ -1,4 +1,6 @@
 # Jormungandr - Onboarding
+from validate_docbr import CNPJ, CPF
+
 from ..enums.high_risk_activity import HighRiskActivity
 from ...domain.enums.user_review import PersonGender, DocumentTypes
 from ..exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed, FinancialCapacityNotValid
@@ -61,119 +63,21 @@ class CnpjSource(Source):
     value: str
 
     @validator("value")
-    def format_cnpj(cls, cnpj):
-        return list(re.sub(r"[^0-9]", "", cnpj))
-
-    @validator("value")
-    def cnpj_is_not_a_sequence(cls, cnpj):
-        if cnpj == cnpj[::-1]:
+    def validate_cnpj(cls, cnpj: str):
+        return_cnpj = CNPJ().validate(cnpj)
+        if return_cnpj is False:
             raise ValueError("Invalid CNPJ")
         return cnpj
-
-    @validator("value")
-    def cnpj_calculation(cls, new_cnpj):
-        first_digit_calculation_array = [
-            "5",
-            "4",
-            "3",
-            "2",
-            "9",
-            "8",
-            "7",
-            "6",
-            "5",
-            "4",
-            "3",
-            "2",
-        ]
-        second_digit_calculation_array = [
-            "6",
-            "5",
-            "4",
-            "3",
-            "2",
-            "9",
-            "8",
-            "7",
-            "6",
-            "5",
-            "4",
-            "3",
-            "2",
-        ]
-        cnpj_origin = deepcopy(new_cnpj)
-        del new_cnpj[-2:]
-
-        calc_cnpj = 11 - (
-            (
-                sum(
-                    [
-                        int(x) * int(y)
-                        for x, y in zip(first_digit_calculation_array, new_cnpj)
-                    ]
-                )
-            )
-            % 11
-        )
-        calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
-        new_cnpj.append(str(calc_cnpj))
-
-        calc_cnpj = 11 - (
-            (
-                sum(
-                    [
-                        int(x) * int(y)
-                        for x, y in zip(second_digit_calculation_array, new_cnpj)
-                    ]
-                )
-            )
-            % 11
-        )
-        calc_cnpj = calc_cnpj if calc_cnpj < 10 else 0
-        new_cnpj.append(str(calc_cnpj))
-
-        if not cnpj_origin == new_cnpj:
-            raise ValueError("Invalid CNPJ")
-
-        new_cnpj_string = "".join(new_cnpj)
-        return new_cnpj_string
 
 
 class CpfSource(Source):
     value: str
 
     @validator("value")
-    def format_cpf(cls, cpf: str):
-        cpf = re.sub("[^0-9]", "", cpf)
-        return cpf
-
-    @validator("value")
-    def cpf_is_not_a_sequence(cls, cpf):
-        if cpf == cpf[::-1]:
-            raise ValueError("Invalid CPF")
-        return cpf
-
-    @validator("value")
-    def cpf_calculation(cls, cpf: str):
-        if len(cpf) != 11:
-            raise ValueError("Invalid cpf")
-
-        first_digit_validation = sum(
-            int(cpf[index]) * (10 - index) for index in range(9)
-        )
-        mod_first_digit = first_digit_validation % 11
-        first_digit = 11 - mod_first_digit if mod_first_digit > 1 else 0
-        if str(first_digit) != cpf[-2]:
-            raise ValueError("Invalid cpf")
-
-        second_digit_validation = (
-            first_digit_validation + sum(map(int, cpf[:9])) + 2 * first_digit
-        )
-        mod_second_digit = second_digit_validation % 11
-        second_digit = 11 - mod_second_digit if mod_second_digit > 1 else 0
-        if str(second_digit) != cpf[-1]:
+    def validate_cpf(cls, cpf: str):
+        return_cpf = CPF().validate(cpf)
+        if return_cpf is False:
             raise ValueError(f"Invalid cpf")
-
         return cpf
 
 

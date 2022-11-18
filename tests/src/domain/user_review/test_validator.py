@@ -86,17 +86,20 @@ async def test_invalid_cpf_sequence():
         assert error == "Invalid CPF"
 
 
-@pytest.mark.asyncio
 def test_invalid_cnpj():
     with pytest.raises(ValueError) as error:
         CnpjSource.cnpj_calculation(list("02916265000150"))
         assert error == "Invalid CPNJ"
 
 
-@pytest.mark.asyncio
-def test_cnpj_calculation_true_false():
+def test_cnpj_calculation_false_true():
     response = CnpjSource.cnpj_calculation(list("14367555000180"))
     assert response == "14367555000180"
+
+
+def test_cnpj_calculation_true_false():
+    response = CnpjSource.cnpj_calculation(list("14367225000180"))
+    assert response == "Invalid CPNJ"
 
 
 def test_cnpj_is_not_a_sequence_raises():
