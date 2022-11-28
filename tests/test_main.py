@@ -1,4 +1,3 @@
-# PROJECT IMPORTS
 import logging.config
 from http import HTTPStatus
 from unittest.mock import patch, MagicMock
@@ -9,6 +8,7 @@ from decouple import RepositoryEnv, Config
 
 from src.domain.user_review.validator import UserReviewData
 from src.services.user_enumerate_data import UserEnumerateService
+from src.transports.device_info.transport import DeviceSecurity
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
@@ -31,6 +31,8 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorOnDecodeJwt,
                     CriticalRiskClientNotAllowed,
                     InvalidOnboardingAntiFraud,
+                    DeviceInfoRequestFailed,
+                    DeviceInfoNotSupplied,
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -126,6 +128,20 @@ exception_case = (
     "Unexpected error occurred",
     HTTPStatus.INTERNAL_SERVER_ERROR,
 )
+device_info_request_case = (
+    DeviceInfoRequestFailed(),
+    "Error trying to get device info",
+    InternalCode.INTERNAL_SERVER_ERROR,
+    "Error trying to get device info",
+    HTTPStatus.INTERNAL_SERVER_ERROR,
+)
+no_device_info_case = (
+    DeviceInfoNotSupplied(),
+    "Device info not supplied",
+    InternalCode.INVALID_PARAMS,
+    "Device info not supplied",
+    HTTPStatus.BAD_REQUEST,
+)
 
 
 @pytest.mark.asyncio
@@ -145,6 +161,8 @@ exception_case = (
         error_on_update_user_case,
         value_error_case,
         exception_case,
+        device_info_request_case,
+        no_device_info_case,
     ],
 )
 @patch.object(UserReviewDataService, "validate_current_onboarding_step")
@@ -153,7 +171,9 @@ exception_case = (
 @patch.object(UserReviewData, "__init__", return_value=None)
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response")
+@patch.object(DeviceSecurity, "get_device_info")
 async def test_update_user_review_data_raising_errors(
+    device_info,
     mocked_build_response,
     mocked_response_instance,
     mocked_model,
@@ -192,7 +212,9 @@ dummy_response = "response"
 @patch.object(UserReviewData, "__init__", return_value=None)
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
+@patch.object(DeviceSecurity, "get_device_info")
 async def test_update_user_review_data(
+    device_info,
     mocked_build_response,
     mocked_response_instance,
     mocked_model,

@@ -36,7 +36,8 @@ class UserRepository(MongoDbBaseRepository):
                         "record_date_control": {
                             "registry_updates": {
                                 "last_registration_data_update": datetime.utcnow(),
-                            }
+                            },
+                            "current_pld_risk_rating_defined_in": datetime.utcnow()
                         }
                     }
                 },

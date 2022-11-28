@@ -1,4 +1,8 @@
-# Jormungandr - Onboarding
+from http import HTTPStatus
+
+import flask
+from etria_logger import Gladsheim
+
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
@@ -18,6 +22,8 @@ from src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     CriticalRiskClientNotAllowed,
     InvalidOnboardingAntiFraud,
+    DeviceInfoRequestFailed,
+    DeviceInfoNotSupplied,
     FinancialCapacityNotValid
 )
 from src.domain.response.model import ResponseModel
@@ -25,28 +31,29 @@ from src.domain.user_review.validator import UserReviewData
 from src.services.jwt import JwtService
 from src.services.user_enumerate_data import UserEnumerateService
 from src.services.user_review import UserReviewDataService
-
-# Standards
-from http import HTTPStatus
-
-# Third party
-from etria_logger import Gladsheim
-import flask
+from src.transports.device_info.transport import DeviceSecurity
 
 
 async def update_user_review_data() -> flask.Response:
     msg_error = "Unexpected error occurred"
-    jwt = flask.request.headers.get("x-thebes-answer")
     try:
+        jwt = flask.request.headers.get("x-thebes-answer")
+        encoded_device_info = flask.request.headers.get("x-device-info")
         raw_payload = flask.request.json
+
         payload_validated = UserReviewData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
+        device_info = await DeviceSecurity.get_device_info(encoded_device_info)
+
         await UserReviewDataService.validate_current_onboarding_step(jwt=jwt)
         await UserEnumerateService(
             payload_validated=payload_validated
         ).validate_enumerate_params()
+
         await UserReviewDataService.apply_rules_to_update_user_review(
-            unique_id=unique_id, payload_validated=payload_validated
+            unique_id=unique_id,
+            payload_validated=payload_validated,
+            device_info=device_info,
         )
         response = ResponseModel(
             success=True,
@@ -163,6 +170,24 @@ async def update_user_review_data() -> flask.Response:
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
+    except DeviceInfoRequestFailed as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INTERNAL_SERVER_ERROR.value,
+            message="Error trying to get device info",
+        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
+    except DeviceInfoNotSupplied as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INVALID_PARAMS.value,
+            message="Device info not supplied",
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
     except ValueError as ex:
