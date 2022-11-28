@@ -12,6 +12,10 @@ class ErrorOnSendAuditLog(Exception):
     )
 
 
+class FinancialCapacityNotValid(Exception):
+    msg = "Jormungandr-Account::Insufficient financial capacity"
+
+
 class ErrorOnSendIaraMessage(Exception):
     msg = "Jormungandr-Onboarding::send_to_sinacor_registration_queue::Error when trying send message to Iara"
 

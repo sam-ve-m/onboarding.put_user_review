@@ -18,6 +18,7 @@ from src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     CriticalRiskClientNotAllowed,
     InvalidOnboardingAntiFraud,
+    FinancialCapacityNotValid
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserReviewData
@@ -78,6 +79,15 @@ async def update_user_review_data() -> flask.Response:
             success=False,
             code=InternalCode.ONBOARDING_STEP_INCORRECT,
             message="User is not in correct step",
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except FinancialCapacityNotValid as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.FINANCIAL_CAPACITY_NOT_VALID,
+            message="Insufficient financial capacity",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
