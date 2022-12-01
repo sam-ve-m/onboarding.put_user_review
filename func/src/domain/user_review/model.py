@@ -50,6 +50,8 @@ class UserReviewModel:
             "rating": self.risk_data.risk_rating.value,
             "approval": self.risk_data.risk_approval,
             "validations": self.risk_data.risk_validations.to_dict(),
+            "device_info": self.device_info.device_info,
+            "device_id": self.device_info.device_id,
         }
         if not audit_template["approval"]:
             audit_template.update({"user_data": self.new_user_registration_data})

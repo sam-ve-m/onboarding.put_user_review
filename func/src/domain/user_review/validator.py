@@ -3,7 +3,11 @@ from validate_docbr import CNPJ, CPF
 
 from ..enums.high_risk_activity import HighRiskActivity
 from ...domain.enums.user_review import PersonGender, DocumentTypes
-from ..exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed, FinancialCapacityNotValid
+from ..exceptions.exceptions import (
+    InvalidEmail,
+    HighRiskActivityNotAllowed,
+    FinancialCapacityNotValid,
+)
 
 # Standards
 from copy import deepcopy
