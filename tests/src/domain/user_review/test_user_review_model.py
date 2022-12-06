@@ -43,6 +43,8 @@ async def test_get_audit_template_to_update_risk_data_when_is_not_approved():
             "is_pep": True,
             "is_pep_related": True,
         },
+        "device_info": model_stub.device_info.device_info,
+        "device_id": model_stub.device_info.device_id,
         "user_data": model_stub.new_user_registration_data,
     }
     assert result == expected_result
@@ -77,5 +79,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
             "is_pep": True,
             "is_pep_related": True,
         },
+        "device_info": model_stub.device_info.device_info,
+        "device_id": model_stub.device_info.device_id,
     }
     assert result == expected_result

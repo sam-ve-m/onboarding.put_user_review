@@ -10,6 +10,7 @@ from ..domain.exceptions.exceptions import (
     CriticalRiskClientNotAllowed,
     InvalidOnboardingAntiFraud,
 )
+from ..domain.models.device_info import DeviceInfo
 from ..domain.user_review.model import UserReviewModel
 from ..domain.user_review.validator import UserReviewData
 from ..repositories.mongo_db.user.repository import UserRepository
@@ -63,7 +64,7 @@ class UserReviewDataService:
 
     @classmethod
     async def apply_rules_to_update_user_review(
-        cls, unique_id: str, payload_validated: UserReviewData
+        cls, unique_id: str, payload_validated: UserReviewData, device_info: DeviceInfo
     ) -> bool:
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (
@@ -80,6 +81,7 @@ class UserReviewDataService:
             unique_id=unique_id,
             modified_register_data=modified_register_data,
             new_user_registration_data=new_user_registration_data,
+            device_info=device_info,
         )
 
         await cls.rate_client_risk(user_review_model)

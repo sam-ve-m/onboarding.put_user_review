@@ -1,7 +1,7 @@
 from unittest.mock import patch
-from regis import Regis, RegisResponse, RiskRatings, RiskValidations
 
 import pytest
+from regis import Regis, RegisResponse, RiskRatings, RiskValidations
 
 from func.src.domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
@@ -13,7 +13,6 @@ from func.src.domain.exceptions.exceptions import (
 )
 from func.src.services.user_review import UserReviewDataService
 from src.domain.models.onboarding import Onboarding
-from src.transports.audit.transport import Audit
 from tests.src.services.user_review.stubs import (
     stub_unique_id,
     stub_payload_validated,
@@ -21,6 +20,7 @@ from tests.src.services.user_review.stubs import (
     stub_user_updated,
     stub_user_not_updated,
     stub_user_review_model,
+    stub_device_info,
 )
 
 
@@ -102,7 +102,9 @@ async def test_when_apply_rules_successfully_then_return_true(
     rate_risk,
 ):
     result = await UserReviewDataService.apply_rules_to_update_user_review(
-        unique_id=stub_unique_id, payload_validated=stub_payload_validated
+        unique_id=stub_unique_id,
+        payload_validated=stub_payload_validated,
+        device_info=stub_device_info,
     )
 
     assert result is True
@@ -113,11 +115,14 @@ async def test_when_apply_rules_successfully_then_return_true(
     "func.src.services.user_review.UserRepository.update_one_with_user_review_data",
     return_value=stub_user_updated,
 )
-async def test_when_update_user_successfully_then_return_true(mock_update_user):
+@patch.object(ErrorToUpdateUser, "__init__")
+async def test_when_update_user_successfully_then_return_true(
+    mock___init__, mock_update_user
+):
     result = await UserReviewDataService._update_user_review(
         unique_id=stub_unique_id, new_user_registration_data={}
     )
-
+    mock___init__.assert_not_called()
     assert result is True
 
 
@@ -126,7 +131,7 @@ async def test_when_update_user_successfully_then_return_true(mock_update_user):
     "func.src.services.user_review.UserRepository.update_one_with_user_review_data",
     return_value=stub_user_not_updated,
 )
-async def test_when_failure_to_update_user_then_raises(mock_update_user):
+async def test_when_failure_to_update_user_review_then_raises(mock_update_user):
     with pytest.raises(ErrorToUpdateUser):
         await UserReviewDataService._update_user_review(
             unique_id=stub_unique_id, new_user_registration_data={}
