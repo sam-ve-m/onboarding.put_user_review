@@ -2,13 +2,15 @@ import pytest
 
 from func.src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
-    InvalidEmail, FinancialCapacityNotValid,
+    InvalidEmail,
+    FinancialCapacityNotValid,
 )
 from func.src.domain.user_review.validator import (
     UserReviewData,
     CpfSource,
     CnpjSource,
-    EmailSource, UserPersonalDataValidation,
+    EmailSource,
+    UserPersonalDataValidation,
 )
 
 register_dummy = {
@@ -90,35 +92,17 @@ def test_validate_cnpj_false():
         response = CnpjSource.validate_cnpj("12123123123412")
 
 
-stub_values_false = {
-            "patrimony": {
-                "value": 500
-            },
-            "income": {
-                "value": 500
-            }
-        }
+stub_values_false = {"patrimony": {"value": 500}, "income": {"value": 500}}
 
 
 def test_financial_capacity_false():
-    response = UserPersonalDataValidation.validate(
-        values=stub_values_false
-    )
+    response = UserPersonalDataValidation.validate(values=stub_values_false)
     assert response == stub_values_false
 
 
-stub_values_true = {
-            "patrimony": {
-                "value": 800
-            },
-            "income": {
-                "value": 100
-            }
-        }
+stub_values_true = {"patrimony": {"value": 800}, "income": {"value": 100}}
 
 
 def test_financial_capacity_true():
     with pytest.raises(FinancialCapacityNotValid):
-        response = UserPersonalDataValidation.validate(
-            values=stub_values_true
-        )
+        response = UserPersonalDataValidation.validate(values=stub_values_true)

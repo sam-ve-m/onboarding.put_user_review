@@ -24,7 +24,7 @@ from src.domain.exceptions.exceptions import (
     InvalidOnboardingAntiFraud,
     DeviceInfoRequestFailed,
     DeviceInfoNotSupplied,
-    FinancialCapacityNotValid
+    FinancialCapacityNotValid,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserReviewData

@@ -117,8 +117,7 @@ async def test_when_apply_rules_successfully_then_return_true(
 )
 @patch.object(ErrorToUpdateUser, "__init__")
 async def test_when_update_user_successfully_then_return_true(
-    mock___init__,
-    mock_update_user
+    mock___init__, mock_update_user
 ):
     result = await UserReviewDataService._update_user_review(
         unique_id=stub_unique_id, new_user_registration_data={}
@@ -132,9 +131,7 @@ async def test_when_update_user_successfully_then_return_true(
     "func.src.services.user_review.UserRepository.update_one_with_user_review_data",
     return_value=stub_user_not_updated,
 )
-async def test_when_failure_to_update_user_review_then_raises(
-    mock_update_user
-):
+async def test_when_failure_to_update_user_review_then_raises(mock_update_user):
     with pytest.raises(ErrorToUpdateUser):
         await UserReviewDataService._update_user_review(
             unique_id=stub_unique_id, new_user_registration_data={}
