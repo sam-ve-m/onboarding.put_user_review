@@ -58,7 +58,11 @@ spec:
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:LLOnmUUffhaUHnewIz@172.30.11.235:6379?db=1"
             - name: ORACLE_CONNECTION_STRING
-              value: "ujormdb001/kALneMdsin767@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.10.227)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM)))"
+              value: "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.10.227)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM)))"
+            - name: ORACLE_USER
+              value: "ujormdb001"
+            - name: ORACLE_PASSWORD
+              value: "kALneMdsin767"
             - name: IARA_KAFKA_BROKERS
               value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: ONBOARDING_STEPS_BR_URL
@@ -66,7 +70,11 @@ spec:
             - name: REGIS_REDIS_URL
               value: "redis://regis:IUmndnhaioaODSAy674320SCBAghj@172.30.11.235:6379"
             - name: REGIS_ORACLE_CONNECTION_STRING
-              value: "UREGIDB001/S2yQ1rA3Tj8qdIL@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.10.227)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM)))"
+              value: "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.10.227)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM)))"
+            - name: REGIS_ORACLE_USER
+              value: "UREGIDB001"
+            - name: REGIS_ORACLE_PASSWORD
+              value: "S2yQ1rA3Tj8qdIL"
             - name: DEVICE_SECURITY_DEVICE_ID_URL
               value: "http://router.fission.svc.cluster.local/security/deviceid"
             - name: DEVICE_SECURITY_DECRYPT_DEVICE_INFO_URL
