@@ -225,8 +225,8 @@ class UserPersonalDataValidation(BaseModel):
     birth_place_state: StateSource
     birth_place_city: CountySource
 
-    @root_validator()
-    def validate(cls, values: Dict[str, Any]):
+    @root_validator(pre=True)
+    def validate_financial_capacity(cls, values: Dict[str, Any]):
         patrimony = values.get("patrimony", {}).get("value")
         income = values.get("income", {}).get("value")
         if (patrimony + income) < 1000:
