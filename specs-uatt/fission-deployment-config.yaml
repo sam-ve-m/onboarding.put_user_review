@@ -4,4 +4,4 @@
 apiVersion: fission.io/v1
 kind: DeploymentConfig
 name: onboarding-put-user-review
-uid: 7016e309-1956-49d7-ad3b-1fbcb8e48b25
+uid: 60ada2b1-5742-4f70-a23f-819391d212c2

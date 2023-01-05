@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, call
-from src.repositories.mongo_db.user.repository import UserRepository
+from func.src.repositories.mongo_db.user.repository import UserRepository
 
 dummy_unique_id = "unique_id"
 dummy_update = {}

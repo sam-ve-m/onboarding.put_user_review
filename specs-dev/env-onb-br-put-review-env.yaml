@@ -1,0 +1,92 @@
+apiVersion: fission.io/v1
+kind: Environment
+metadata:
+  creationTimestamp: null
+  name: onb-br-put-review-env
+  namespace: default
+spec:
+  builder:
+    container:
+      name: ""
+      resources: {}
+  imagepullsecret: nexus-v3
+  keeparchive: false
+  resources: {}
+  runtime:
+    container:
+      name: ""
+      resources: {}
+    image: nexus.sigame.com.br/fission-onboarding-br-put-review:0.1.0
+    podspec:
+      containers:
+        - name: onb-br-put-review-env
+          env:
+            - name: ROOT_LOG_LEVEL
+              value: "INFO"
+            - name: ETRIA_LOG_LEVEL
+              value: "INFO"
+            - name: ASGI_FRAMEWORK
+              value: "HYPERCORN"
+            - name: PERSEPHONE_USER_REVIEW_SCHEMA
+              value: "user_update_register_data_schema"
+            - name: PERSEPHONE_USER_PLD_SCHEMA
+              value: "pld"
+            - name: PERSEPHONE_TOPIC_USER
+              value: "sphinx-persephone.user.crud"
+            - name: PERSEPHONE_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: MONGO_CONNECTION_URL
+              value: "mongodb://jormungandr:LIwn1In32LdowPqma@172.30.10.75:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary"
+            - name: MONGODB_DATABASE_NAME
+              value: "lionx"
+            - name: MONGODB_USER_COLLECTION
+              value: "users"
+            - name: HEIMDALL_FILE_BUCKET_NAME
+              value: "heimdall_rsa"
+            - name: HEIMDALL_AWS_ACCESS_KEY_ID
+              value: "AKIATZVFXI25USQWCS5O"
+            - name: HEIMDALL_AWS_SECRET_ACCESS_KEY
+              value: "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"
+            - name: HEIMDALL_REGION_NAME
+              value: "sa-east-1"
+            - name: HEIMDALL_BUCKET_NAME_KEY
+              value: "auth-gateway-keys-dev"
+            - name: HEIMDALL_JWT_REQUIRED_FIELDS
+              value: "[]"
+            - name: HEIMDALL_REDIS_URL
+              value: "redis://heimdal:LLOnmUUffhaUHnewIz@172.30.11.235:6379?db=1"
+            - name: ORACLE_BASE_DSN
+              value: "172.30.10.227"
+            - name: ORACLE_USER
+              value: "ujormdb001"
+            - name: IARA_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: ORACLE_PASSWORD
+              value: "kALneMdsin767"
+            - name: ORACLE_SERVICE
+              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
+            - name: ORACLE_ENCODING
+              value: "UTF-8"
+            - name: ORACLE_PORT
+              value: "1521"
+            - name: ONBOARDING_STEPS_BR_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
+            - name: REGIS_REDIS_URL
+              value: "redis://regis:IUmndnhaioaODSAy674320SCBAghj@172.30.11.235:6379"
+            - name: REGIS_ORACLE_BASE_DSN
+              value: "172.30.10.227"
+            - name: REGIS_ORACLE_PORT
+              value: "1521"
+            - name: REGIS_ORACLE_USER
+              value: "UREGIDB001"
+            - name: REGIS_ORACLE_PASSWORD
+              value: "S2yQ1rA3Tj8qdIL"
+            - name: REGIS_ORACLE_SERVICE
+              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
+            - name: DEVICE_SECURITY_DEVICE_ID_URL
+              value: "http://router.fission.svc.cluster.local/security/deviceid"
+            - name: DEVICE_SECURITY_DECRYPT_DEVICE_INFO_URL
+              value: "http://router.fission.svc.cluster.local/security/deviceid/deviceinfo/decrypt"
+            - name: DEFAULT_PRECISION_VALUE
+              value: 1
+  version: 3
