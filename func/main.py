@@ -3,8 +3,8 @@ from http import HTTPStatus
 import flask
 from etria_logger import Gladsheim
 
-from src.domain.enums.code import InternalCode
-from src.domain.exceptions.exceptions import (
+from func.src.domain.enums.code import InternalCode
+from func.src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
     UserUniqueIdNotExists,
     ErrorOnSendAuditLog,
@@ -26,12 +26,12 @@ from src.domain.exceptions.exceptions import (
     DeviceInfoNotSupplied,
     FinancialCapacityNotValid,
 )
-from src.domain.response.model import ResponseModel
-from src.domain.user_review.validator import UserReviewData
-from src.services.jwt import JwtService
-from src.services.user_enumerate_data import UserEnumerateService
-from src.services.user_review import UserReviewDataService
-from src.transports.device_info.transport import DeviceSecurity
+from func.src.domain.response.model import ResponseModel
+from func.src.domain.user_review.validator import UserReviewData
+from func.src.services.jwt import JwtService
+from func.src.services.user_enumerate_data import UserEnumerateService
+from func.src.services.user_review import UserReviewDataService
+from func.src.transports.device_info.transport import DeviceSecurity
 
 
 async def update_user_review_data() -> flask.Response:

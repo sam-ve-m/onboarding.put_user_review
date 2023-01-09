@@ -6,20 +6,20 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
-from src.domain.user_review.validator import UserReviewData
-from src.services.user_enumerate_data import UserEnumerateService
-from src.transports.device_info.transport import DeviceSecurity
+from func.src.domain.user_review.validator import UserReviewData
+from func.src.services.user_enumerate_data import UserEnumerateService
+from func.src.transports.device_info.transport import DeviceSecurity
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
         with patch.object(Config, "__call__"):
             with patch.object(logging.config, "dictConfig"):
                 from etria_logger import Gladsheim
-                from main import update_user_review_data
-                from src.services.jwt import JwtService
-                from src.domain.enums.code import InternalCode
-                from src.domain.response.model import ResponseModel
-                from src.domain.exceptions.exceptions import (
+                from func.main import update_user_review_data
+                from func.src.services.jwt import JwtService
+                from func.src.domain.enums.code import InternalCode
+                from func.src.domain.response.model import ResponseModel
+                from func.src.domain.exceptions.exceptions import (
                     OnboardingStepsStatusCodeNotOk,
                     InvalidOnboardingCurrentStep,
                     ErrorOnGetUniqueId,
@@ -34,7 +34,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     DeviceInfoRequestFailed,
                     DeviceInfoNotSupplied,
                 )
-                from src.services.user_review import UserReviewDataService
+                from func.src.services.user_review import UserReviewDataService
 
 error_on_decode_jwt_case = (
     ErrorOnDecodeJwt(),

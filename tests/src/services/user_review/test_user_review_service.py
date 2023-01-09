@@ -12,7 +12,7 @@ from func.src.domain.exceptions.exceptions import (
     InvalidOnboardingAntiFraud,
 )
 from func.src.services.user_review import UserReviewDataService
-from src.domain.models.onboarding import Onboarding
+from func.src.domain.models.onboarding import Onboarding
 from tests.src.services.user_review.stubs import (
     stub_unique_id,
     stub_payload_validated,
