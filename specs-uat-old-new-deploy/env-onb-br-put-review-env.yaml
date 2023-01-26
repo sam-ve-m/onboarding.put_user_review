@@ -5,18 +5,18 @@ metadata:
   name: onb-br-put-review-env
   namespace: default
 spec:
+  builder:
+    container:
+      name: ""
+      resources: {}
   imagepullsecret: nexus-v3
   keeparchive: false
-  poolsize: 2
-  resources:
-    requests:
-      cpu: 128m
-      memory: 128Mi
-    limits:
-      cpu: 256m
-      memory: 256Mi
+  resources: {}
   runtime:
-    image: nexus.sigame.com.br/fission-onboarding-br-put-review:0.2.0-0
+    container:
+      name: ""
+      resources: {}
+    image: nexus.sigame.com.br/fission-onboarding-br-put-review:0.1.0
     podspec:
       containers:
         - name: onb-br-put-review-env
@@ -89,5 +89,4 @@ spec:
               value: "http://router.fission.svc.cluster.local/security/deviceid/deviceinfo/decrypt"
             - name: DEFAULT_PRECISION_VALUE
               value: 1
-  terminationGracePeriod: 3
   version: 3
