@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from tests.src.services.user_review.stubs import stub_user_review_model
 from regis import RegisResponse, RiskValidations, RiskRatings
 
@@ -21,6 +23,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_not_approved():
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -57,6 +60,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,

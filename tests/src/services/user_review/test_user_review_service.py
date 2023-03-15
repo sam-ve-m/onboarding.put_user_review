@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest.mock import patch
 
 import pytest
@@ -149,6 +150,7 @@ async def test_rate_client_risk(rate_client_risk, audit_log):
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -174,6 +176,7 @@ async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audi
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,

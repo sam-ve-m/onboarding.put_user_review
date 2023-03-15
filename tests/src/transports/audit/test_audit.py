@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from func.src.domain.exceptions.exceptions import ErrorOnSendAuditLog
 from func.src.transports.audit.transport import Audit
 from tests.src.services.user_review.stubs import stub_user_review_model
@@ -49,6 +51,7 @@ async def test_record_message_log_to_rate_client_risk_when_success(
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -77,6 +80,7 @@ async def test_record_message_log_to_rate_client_risk_when_failed(
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
