@@ -71,7 +71,7 @@ async def update_user_review_data() -> flask.Response:
     try:
         if jwt := flask.request.headers.get("x-thebes-answer"):
             await _update_user_review_data_legacy(jwt)
-        if api_key := flask.request.headers.get("x-api-key"):
+        elif api_key := flask.request.headers.get("x-api-key"):
             await _append_user_risk_validation(api_key)
         else:
             raise ErrorOnDecodeJwt()

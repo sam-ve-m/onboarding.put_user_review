@@ -104,7 +104,7 @@ async def test_when_apply_rules_successfully_then_return_true(
 ):
     result = await UserReviewDataService.apply_rules_to_update_user_review(
         unique_id=stub_unique_id,
-        payload_validated=stub_payload_validated,
+        payload_validated=stub_payload_validated.dict(),
         device_info=stub_device_info,
     )
 
