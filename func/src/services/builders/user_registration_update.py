@@ -7,10 +7,10 @@ from typing import Tuple, Optional
 
 class UpdateCustomerRegistrationBuilder:
     def __init__(
-        self, old_personal_data: dict, new_personal_data: UserReviewData, unique_id: str
+        self, old_personal_data: dict, new_personal_data: dict, unique_id: str
     ):
         self.__old_personal_data = old_personal_data
-        self.__new_personal_data = new_personal_data.dict()
+        self.__new_personal_data = new_personal_data
         self.__unique_id = unique_id
         self.__update_buffer = old_personal_data.copy()
         self.__modified_data = []

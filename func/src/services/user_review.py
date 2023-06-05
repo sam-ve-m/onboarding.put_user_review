@@ -65,7 +65,7 @@ class UserReviewDataService:
 
     @classmethod
     async def apply_rules_to_update_user_review(
-        cls, unique_id: str, payload_validated: UserReviewData, device_info: DeviceInfo
+        cls, unique_id: str, payload_validated: dict, device_info: DeviceInfo = None
     ) -> bool:
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (
