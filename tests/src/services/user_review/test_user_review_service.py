@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import patch, AsyncMock
 
 import pytest
 from regis import Regis, RegisResponse, RiskRatings, RiskValidations
@@ -12,6 +12,7 @@ from func.src.domain.exceptions.exceptions import (
     FailedToGetData,
     InvalidOnboardingAntiFraud,
 )
+from func.src.domain.user_review.model import UserReviewModel
 from func.src.services.user_review import UserReviewDataService
 from func.src.domain.models.onboarding import Onboarding
 from tests.src.services.user_review.stubs import (
@@ -94,7 +95,9 @@ async def test_validate_current_onboarding_step_when_anti_fraud_is_not_approved(
     "func.src.services.user_review.UserReviewDataService._get_user_data",
     return_value=stub_user_from_database,
 )
+@patch.object(UserReviewModel, "__new__")
 async def test_when_apply_rules_successfully_then_return_true(
+    mocked_model,
     mock_get_user,
     mock_audit_registration_data,
     mock_audit_pld,
@@ -102,12 +105,12 @@ async def test_when_apply_rules_successfully_then_return_true(
     mock_iara,
     rate_risk,
 ):
+    mocked_model.return_value = AsyncMock()
     result = await UserReviewDataService.apply_rules_to_update_user_review(
         unique_id=stub_unique_id,
         payload_validated=stub_payload_validated.dict(),
-        device_info=stub_device_info,
     )
-
+    assert mocked_model.mock_calls[0].kwargs["device_info"] is None
     assert result is True
 
 

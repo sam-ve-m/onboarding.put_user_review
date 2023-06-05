@@ -119,15 +119,6 @@ async def update_user_review_data() -> flask.Response:
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
-    except FinancialCapacityNotValid as ex:
-        Gladsheim.error(error=ex, message=ex.msg)
-        response = ResponseModel(
-            success=False,
-            code=InternalCode.FINANCIAL_CAPACITY_NOT_VALID,
-            message="Insufficient financial capacity",
-        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
-        return response
-
     except InvalidOnboardingAntiFraud as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
@@ -163,6 +154,7 @@ async def update_user_review_data() -> flask.Response:
         InvalidActivity,
         InvalidMaritalStatus,
         InvalidCountryAcronym,
+        FinancialCapacityNotValid
     ) as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
