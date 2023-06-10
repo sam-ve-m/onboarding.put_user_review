@@ -31,5 +31,7 @@ RUN touch /opt/envs/iara.client.python.lionx.com.br/.env
 
 
 COPY ./requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+ENV PIP_CONFIG_FILE=/root/.config/pip/pip.conf
+RUN --mount=type=secret,id=pipconfig,target=/root/.config/pip/pip.conf \
+pip install -r requirements.txt
 COPY ./func ./func
