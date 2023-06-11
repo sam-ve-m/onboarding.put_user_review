@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 import flask
 from etria_logger import Gladsheim
+from decouple import config
 
 from func.src.domain.enums.code import InternalCode
 from func.src.domain.exceptions.exceptions import (
@@ -24,7 +25,7 @@ from func.src.domain.exceptions.exceptions import (
     InvalidOnboardingAntiFraud,
     DeviceInfoRequestFailed,
     DeviceInfoNotSupplied,
-    FinancialCapacityNotValid,
+    FinancialCapacityNotValid, InvalidApiKey,
 )
 from func.src.domain.response.model import ResponseModel
 from func.src.domain.user_review.validator import UserReviewData
@@ -34,32 +35,61 @@ from func.src.services.user_review import UserReviewDataService
 from func.src.transports.device_info.transport import DeviceSecurity
 
 
+async def _update_user_review_data_legacy(jwt: str):
+    encoded_device_info = flask.request.headers.get("x-device-info")
+    raw_payload = flask.request.json
+
+    payload_validated = UserReviewData(**raw_payload)
+    unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
+    device_info = await DeviceSecurity.get_device_info(encoded_device_info)
+
+    await UserReviewDataService.validate_current_onboarding_step(jwt=jwt)
+    await UserEnumerateService(
+        payload_validated=payload_validated
+    ).validate_enumerate_params()
+
+    await UserReviewDataService.apply_rules_to_update_user_review(
+        unique_id=unique_id,
+        payload_validated=payload_validated.dict(),
+        device_info=device_info,
+    )
+
+
+async def _append_user_risk_validation(api_key: str):
+    if config("API_KEY") != api_key:
+        raise InvalidApiKey()
+    if not (unique_id := flask.request.headers.get("unique_id")):
+        raise ValueError("Missing unique id")
+    await UserReviewDataService.apply_rules_to_update_user_review(
+        unique_id=unique_id,
+        payload_validated={},
+    )
+
+
 async def update_user_review_data() -> flask.Response:
     msg_error = "Unexpected error occurred"
     try:
-        jwt = flask.request.headers.get("x-thebes-answer")
-        encoded_device_info = flask.request.headers.get("x-device-info")
-        raw_payload = flask.request.json
+        if jwt := flask.request.headers.get("x-thebes-answer"):
+            await _update_user_review_data_legacy(jwt)
+        elif api_key := flask.request.headers.get("x-api-key"):
+            await _append_user_risk_validation(api_key)
+        else:
+            raise ErrorOnDecodeJwt()
 
-        payload_validated = UserReviewData(**raw_payload)
-        unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
-        device_info = await DeviceSecurity.get_device_info(encoded_device_info)
-
-        await UserReviewDataService.validate_current_onboarding_step(jwt=jwt)
-        await UserEnumerateService(
-            payload_validated=payload_validated
-        ).validate_enumerate_params()
-
-        await UserReviewDataService.apply_rules_to_update_user_review(
-            unique_id=unique_id,
-            payload_validated=payload_validated,
-            device_info=device_info,
-        )
         response = ResponseModel(
             success=True,
             message="User review data successfully validated",
             code=InternalCode.SUCCESS,
         ).build_http_response(status=HTTPStatus.OK)
+        return response
+
+    except InvalidApiKey as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.JWT_INVALID,
+            message="Invalid Api Key",
+        ).build_http_response(status=HTTPStatus.UNAUTHORIZED)
         return response
 
     except ErrorOnDecodeJwt as ex:
@@ -86,15 +116,6 @@ async def update_user_review_data() -> flask.Response:
             success=False,
             code=InternalCode.ONBOARDING_STEP_INCORRECT,
             message="User is not in correct step",
-        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
-        return response
-
-    except FinancialCapacityNotValid as ex:
-        Gladsheim.error(error=ex, message=ex.msg)
-        response = ResponseModel(
-            success=False,
-            code=InternalCode.FINANCIAL_CAPACITY_NOT_VALID,
-            message="Insufficient financial capacity",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
@@ -133,6 +154,7 @@ async def update_user_review_data() -> flask.Response:
         InvalidActivity,
         InvalidMaritalStatus,
         InvalidCountryAcronym,
+        FinancialCapacityNotValid
     ) as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(

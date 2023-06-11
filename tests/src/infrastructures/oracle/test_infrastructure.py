@@ -24,12 +24,7 @@ async def test_get_pool(mocked_env, mock_connection):
         min=2,
         max=100,
         increment=1,
-        dsn=cx_Oracle_async.makedsn(
-            dummy_env,
-            dummy_env,
-            service_name=dummy_env,
-        ),
-        encoding=dummy_env,
+        dsn=dummy_env,
     )
     mocked_env.assert_called()
 
@@ -41,12 +36,7 @@ async def test_get_pool(mocked_env, mock_connection):
         min=2,
         max=100,
         increment=1,
-        dsn=cx_Oracle_async.makedsn(
-            dummy_env,
-            dummy_env,
-            service_name=dummy_env,
-        ),
-        encoding=dummy_env,
+        dsn=dummy_env,
     )
     mocked_env.assert_called()
     OracleInfrastructure.client = None

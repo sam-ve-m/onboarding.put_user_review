@@ -79,5 +79,7 @@ spec:
               value: "http://router.fission.svc.cluster.local/security/deviceid/deviceinfo/decrypt"
             - name: DEFAULT_PRECISION_VALUE
               value: 1
+            - name: API_KEY
+              value: "api_key"
   terminationGracePeriod: 3
   version: 3

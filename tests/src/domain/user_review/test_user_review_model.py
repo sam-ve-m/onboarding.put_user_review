@@ -1,3 +1,7 @@
+from datetime import datetime
+from unittest.mock import MagicMock
+
+from func.src.domain.user_review.model import UserReviewModel
 from tests.src.services.user_review.stubs import stub_user_review_model
 from regis import RegisResponse, RiskValidations, RiskRatings
 
@@ -21,6 +25,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_not_approved():
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -57,6 +62,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -83,3 +89,35 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
         "device_id": model_stub.device_info.device_id,
     }
     assert result == expected_result
+
+
+@pytest.mark.asyncio
+async def test_get_templates_without_device_id():
+    stub = MagicMock()
+    result = await UserReviewModel.get_audit_template_to_update_registration_data(stub)
+    expected_result = {
+        "unique_id": stub.unique_id,
+        "modified_register_data": stub.modified_register_data,
+        "update_customer_registration_data": stub.user_review_data,
+        "device_info": stub.device_info.device_info,
+        "device_id": stub.device_info.device_id
+    }
+    assert result == expected_result
+    stub.device_info = None
+    result = await UserReviewModel.get_audit_template_to_update_registration_data(stub)
+    expected_result = {
+        "unique_id": stub.unique_id,
+        "modified_register_data": stub.modified_register_data,
+        "update_customer_registration_data": stub.user_review_data,
+    }
+    assert result == expected_result
+    result = await UserReviewModel.get_audit_template_to_update_risk_data(stub)
+    expected_result = {
+        "unique_id": stub.unique_id,
+        "score": stub.risk_data.risk_score,
+        "rating": stub.risk_data.risk_rating.value,
+        "approval": stub.risk_data.risk_approval,
+        "validations": stub.risk_data.risk_validations.to_dict(),
+    }
+    assert result == expected_result
+

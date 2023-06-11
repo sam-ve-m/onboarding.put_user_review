@@ -95,7 +95,7 @@ stub_values_false = {"patrimony": {"value": 500}, "income": {"value": 500}}
 
 
 def test_financial_capacity_false():
-    response = UserPersonalDataValidation.validate(values=stub_values_false)
+    response = UserPersonalDataValidation.validate_financial_capacity(values=stub_values_false)
     assert response == stub_values_false
 
 
@@ -104,4 +104,4 @@ stub_values_true = {"patrimony": {"value": 800}, "income": {"value": 100}}
 
 def test_financial_capacity_true():
     with pytest.raises(FinancialCapacityNotValid):
-        response = UserPersonalDataValidation.validate(values=stub_values_true)
+        response = UserPersonalDataValidation.validate_financial_capacity(values=stub_values_true)
