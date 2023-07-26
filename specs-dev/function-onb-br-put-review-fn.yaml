@@ -1,55 +1,57 @@
 include:
-- ./func/*
+- fission.py
 kind: ArchiveUploadSpec
-name: func-9iPN
+name: fission-py-dCmf
 
 ---
 apiVersion: fission.io/v1
 kind: Package
 metadata:
   creationTimestamp: null
-  name: user-review-fn-730c2b1e-c415-46ba-9900-eb856df59877
+  name: onb-br-put-review-fn-e7070d66-316a-4100-bcce-b214f97000a3
   namespace: default
 spec:
   deployment:
     checksum: {}
+    type: url
+    url: archive://fission-py-dCmf
   environment:
-    name: user-review-env
+    name: onb-br-put-review-env
     namespace: default
   source:
     checksum: {}
-    type: url
-    url: archive://func-9iPN
 status:
-  buildstatus: pending
-  lastUpdateTimestamp: "2022-08-19T20:21:29Z"
+  buildstatus: none
+  lastUpdateTimestamp: "2023-01-05T17:38:54Z"
 
 ---
 apiVersion: fission.io/v1
 kind: Function
 metadata:
   creationTimestamp: null
-  name: user-review-fn
+  name: onb-br-put-review-fn
   namespace: default
 spec:
   InvokeStrategy:
     ExecutionStrategy:
-      ExecutorType: newdeploy
-      MaxScale: 3
-      MinScale: 1
+      ExecutorType: poolmgr
       SpecializationTimeout: 120
-      TargetCPUPercent: 80
     StrategyType: execution
   concurrency: 500
   environment:
-    name: user-review-env
+    name: onb-br-put-review-env
     namespace: default
   functionTimeout: 60
   idletimeout: 120
   package:
-    functionName: main.update_user_review_data
     packageref:
-      name: user-review-fn-730c2b1e-c415-46ba-9900-eb856df59877
+      name: onb-br-put-review-fn-e7070d66-316a-4100-bcce-b214f97000a3
       namespace: default
   requestsPerPod: 10000
-  resources: {}
+  resources:
+    requests:
+      cpu: 128m
+      memory: 128Mi
+    limits:
+      cpu: 256m
+      memory: 256Mi

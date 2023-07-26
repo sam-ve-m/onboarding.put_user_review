@@ -17,10 +17,15 @@ from func.src.transports.device_info.transport import DeviceSecurity
 dummy_value = MagicMock()
 
 
+def raise_second(*args):
+    if isinstance(args[1], (BaseException, Exception)):
+        raise args[1]
+
+
 @pytest.mark.asyncio
 @patch.object(AsyncClient, "__init__", return_value=None)
 @patch.object(AsyncClient, "__aenter__")
-@patch.object(AsyncClient, "__aexit__")
+@patch.object(AsyncClient, "__aexit__", side_effect=raise_second)
 @patch.object(Config, "__call__")
 @patch.object(Gladsheim, "error")
 async def test_generate_device_id(
@@ -41,10 +46,6 @@ async def test_generate_device_id(
     assert result == (
         mocked_client_enter.return_value.post.return_value.json.return_value.get.return_value
     )
-
-
-def raise_second(*args):
-    raise args[1]
 
 
 @pytest.mark.asyncio
@@ -97,7 +98,7 @@ async def test_generate_device_id_when_device_info_is_not_supplied(
 @pytest.mark.asyncio
 @patch.object(AsyncClient, "__init__", return_value=None)
 @patch.object(AsyncClient, "__aenter__")
-@patch.object(AsyncClient, "__aexit__")
+@patch.object(AsyncClient, "__aexit__", side_effect=raise_second)
 @patch.object(Config, "__call__")
 @patch.object(Gladsheim, "error")
 async def test_decrypt_device_info(

@@ -10,6 +10,7 @@ class PersonGender(StrEnum):
 class DocumentTypes(StrEnum):
     RG = "RG"
     CH = "CH"
+    RN = "RN"
 
 
 class UserOnboardingStep(StrEnum):
